@@ -172,6 +172,12 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
 
                     for i in 0 .. value.len()
                     {
+                        // TODO(pbz): These fail hard. Print better message
+                        // ? Perhaps a 16 bit was passed to a 32 bit?
+                        // ? "32-bit value expected, found less than that"
+                        // value[i] = bytes.next().expect(
+                        //     format!("Unexpected end of byte stream while processing instruction: {}", op).as_str()
+                        // );
                         value[i] = bytes.next().unwrap();
                     }
 

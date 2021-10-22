@@ -237,4 +237,170 @@ pub fn test_instruction_disassembly()
         "PUSH64 @R1",
         dis(opts, cur, &[byte(0, 1, OpCode::PUSH), 0b00001001])
     );
+
+    assert_eq!(
+        "POP64 R1 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::POP), 0b00000001][..],
+                &(-3i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "PUSH64 R1 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::PUSH), 0b00000001][..],
+                &(-3i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "POP64 @R1(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::POP), 0b00001001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "PUSH64 @R1(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::PUSH), 0b00001001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!("CALL32 R1", dis(opts, cur, &[OpCode::CALL.to(), 0b00010001]));
+    assert_eq!("CALL32a R1", dis(opts, cur, &[OpCode::CALL.to(), 0b00000001]));
+
+    assert_eq!(
+        "CALL32 R1 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CALL), 0b00010001][..],
+                &(-3i32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CALL32a R1 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CALL), 0b00000001][..],
+                &(-3i32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CALL32 @R1(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CALL), 0b00011001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!("CALL32 @R1", dis(opts, cur, &[OpCode::CALL.to(), 0b00011001]));
+
+    assert_eq!(
+        "CALL32a @R1(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CALL), 0b00001001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!("CALL32EX R1", dis(opts, cur, &[OpCode::CALL.to(), 0b00110001]));
+    assert_eq!("CALL32EXa R1", dis(opts, cur, &[OpCode::CALL.to(), 0b00100001]));
+    assert_eq!("CALL32EX @R1", dis(opts, cur, &[OpCode::CALL.to(), 0b00111001]));
+    assert_eq!("CALL32EXa @R1", dis(opts, cur, &[OpCode::CALL.to(), 0b00101001]));
+
+    assert_eq!(
+        "CALL32EX R1 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CALL), 0b00110001][..],
+                &(-3i32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CALL32EXa R1 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CALL), 0b00100001][..],
+                &(-3i32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CALL32EX @R1(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CALL), 0b00111001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CALL32EXa @R1(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CALL), 0b00101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CALL64EXa -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CALL), 0b00110001][..],
+                &(-3i64).to_le_bytes()[..],
+            ].concat()
+        )
+    );
 }
