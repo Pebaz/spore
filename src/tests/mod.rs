@@ -164,4 +164,77 @@ pub fn test_instruction_disassembly()
             ].concat()
         )
     );
+
+    assert_eq!("POP32 R1", dis(opts, cur, &[OpCode::POP.to(), 0b00000001]));
+    assert_eq!("PUSH32 R1", dis(opts, cur, &[OpCode::PUSH.to(), 0b00000001]));
+    assert_eq!("POP32 @R1", dis(opts, cur, &[OpCode::POP.to(), 0b00001001]));
+    assert_eq!("PUSH32 @R1", dis(opts, cur, &[OpCode::PUSH.to(), 0b00001001]));
+
+    assert_eq!(
+        "POP32 R1 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::POP), 0b00000001][..],
+                &(-3i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "PUSH32 R1 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::PUSH), 0b00000001][..],
+                &(-3i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "POP32 @R1(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::POP), 0b00001001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "PUSH32 @R1(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::PUSH), 0b00001001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "POP64 R1",
+        dis(opts, cur, &[byte(0, 1, OpCode::POP), 0b00000001])
+    );
+
+    assert_eq!(
+        "PUSH64 R1",
+        dis(opts, cur, &[byte(0, 1, OpCode::PUSH), 0b00000001])
+    );
+
+    assert_eq!(
+        "POP64 @R1",
+        dis(opts, cur, &[byte(0, 1, OpCode::POP), 0b00001001])
+    );
+
+    assert_eq!(
+        "PUSH64 @R1",
+        dis(opts, cur, &[byte(0, 1, OpCode::PUSH), 0b00001001])
+    );
 }
