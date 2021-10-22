@@ -1,4 +1,3 @@
-use colored::*;
 use crate::opcode::*;
 use crate::operand::*;
 use crate::argument::*;

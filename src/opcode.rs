@@ -127,7 +127,6 @@ impl std::convert::TryFrom<OpCode> for u8
             OpCode::STORESP => Ok(0x2A),
             OpCode::SUB => Ok(0x0D),
             OpCode::XOR => Ok(0x16),
-            _ => Err(()),
         }
     }
 }
@@ -219,10 +218,11 @@ impl OpCode
         bytes: &mut T
     ) -> Option<()>
     {
-        if options.theme.is_none()
-        {
-            colored::control::set_override(false);
-        }
+        // TODO(pbz): This doesn't really serve a purpose, but could be useful
+        // if options.theme.is_none()
+        // {
+        //     colored::control::set_override(false);
+        // }
 
         let byte0 = if let Some(byte) = bytes.next()
         {

@@ -38,14 +38,7 @@ pub fn color_opcode(string: String, options: &Options) -> String
 {
     if let Some(color_theme) = &options.theme
     {
-        if let Color::TrueColor { r, g, b } = color_theme.opcode
-        {
-            string.truecolor(r, g, b).to_string()
-        }
-        else
-        {
-            string
-        }
+        colored_string(string, color_theme.opcode)
     }
     else
     {
