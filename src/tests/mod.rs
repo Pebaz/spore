@@ -66,9 +66,101 @@ pub fn test_instruction_disassembly()
             opts,
             cur,
             &[
-                // &[OpCode::JMP8.to()][..],
+                // Test that CC or CS have not effect on unconditional jump
                 &[byte(0, 1, OpCode::JMP8)][..],
                 &(-3i8).to_be_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "JMP8cc -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::JMP8)][..],
+                &(-3i8).to_be_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "JMP8cs -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::JMP8)][..],
+                &(-3i8).to_be_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "POPn R1",
+        dis(opts, cur, &[OpCode::POPn.to(), 0b00000001])
+    );
+
+    assert_eq!(
+        "PUSHn R1",
+        dis(opts, cur, &[OpCode::PUSHn.to(), 0b00000001])
+    );
+
+    assert_eq!(
+        "POPn @R1",
+        dis(opts, cur, &[OpCode::POPn.to(), 0b00001001])
+    );
+
+    assert_eq!(
+        "PUSHn @R1",
+        dis(opts, cur, &[OpCode::PUSHn.to(), 0b00001001])
+    );
+
+    assert_eq!(
+        "POPn R1 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::POPn), 0b00000001][..],
+                &(-3i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "PUSHn R1 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::PUSHn), 0b00000001][..],
+                &(-3i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "POPn @R1(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::POPn), 0b00001001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "PUSHn @R1(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::PUSHn), 0b00001001][..],
+                &(36879u16).to_le_bytes()[..],
             ].concat()
         )
     );
