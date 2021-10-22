@@ -81,6 +81,9 @@ mod natural_index;
 mod instruction;
 mod bits;
 
+#[cfg(test)]
+mod tests;  // Integration tests
+
 use std::io::prelude::*;
 use crate::opcode::OpCode;
 

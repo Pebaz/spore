@@ -1,5 +1,8 @@
 use crate::bits::*;
 
+const SIZE_OF_VOID_PTR: u16 = 8;
+const HEADER_SIZE: usize = 4;
+
 pub struct NaturalIndex
 {
     pub value: u64,
@@ -8,9 +11,6 @@ pub struct NaturalIndex
     pub natural: u64,
     pub offset: i64,
 }
-
-const SIZE_OF_VOID_PTR: u16 = 8;
-const HEADER_SIZE: usize = 4;
 
 impl NaturalIndex
 {
@@ -115,5 +115,57 @@ impl std::fmt::Display for NaturalIndex
             if self.sign < 0 { "-" } else { "+" },
             self.constant
         )
+    }
+}
+
+
+#[cfg(test)]
+mod tests
+{
+    use super::*;
+
+    #[test]
+    pub fn test_natural_indexing()
+    {
+        let index = NaturalIndex::from_u16(4161);
+        assert_eq!(index.constant, 16u64);
+        assert_eq!(index.natural, 1u64);
+        assert_eq!(index.offset, 24i64);
+
+        let index = NaturalIndex::from_u16(4114);
+        assert_eq!(index.constant, 4u64);
+        assert_eq!(index.natural, 2u64);
+        assert_eq!(index.offset, 20i64);
+
+        let index = NaturalIndex::from_u16(8581);
+        assert_eq!(index.constant, 24u64);
+        assert_eq!(index.natural, 5u64);
+        assert_eq!(index.offset, 64i64);
+
+        let index = NaturalIndex::from_u32(805324752);
+        assert_eq!(index.constant, 4u64);
+        assert_eq!(index.natural, 2000u64);
+        assert_eq!(index.offset, 16004i64);
+
+        let index = NaturalIndex::from_u32(111111);
+        assert_eq!(index.constant, 111111u64);
+        assert_eq!(index.natural, 0u64);
+        assert_eq!(index.offset, 111111i64);
+
+        let index = NaturalIndex::from_u64(2305843035428095952);
+        assert_eq!(index.constant, 400000u64);
+        assert_eq!(index.natural, 2000u64);
+        assert_eq!(index.offset, 416000i64);
+
+        let index = NaturalIndex::from_u32(591751049);
+        assert_eq!(index.constant, 214375u64);
+        assert_eq!(index.natural, 137u64);
+        assert_eq!(index.offset, 215471i64);
+
+        let index = NaturalIndex::from_u64(11529215072282871760);
+        assert_eq!(index.sign, -1i8);
+        assert_eq!(index.constant, 400000u64);
+        assert_eq!(index.natural, 2000u64);
+        assert_eq!(index.offset, -416000i64);
     }
 }

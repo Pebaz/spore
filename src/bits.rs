@@ -171,12 +171,12 @@ mod tests
     #[test]
     pub fn test_bits_to_byte()
     {
-        assert_eq!(bits_to_byte_u8(&[true, false]), 2u8);
-        assert_eq!(bits_to_byte_u8(&[false, true, false]), 2u8);
-        assert_eq!(bits_to_byte_u8(&[true, false, false]), 4u8);
-        assert_eq!(bits_to_byte_u8(&[true, false, false, false]), 8u8);
-        assert_eq!(bits_to_byte_u8(&[true, false, false, true]), 9u8);
-        assert_eq!(bits_to_byte_u8(&[true, false, true, true]), 11u8);
+        // assert_eq!(bits_to_byte_u8(&[true, false]), 2u8);
+        // assert_eq!(bits_to_byte_u8(&[false, true, false]), 2u8);
+        // assert_eq!(bits_to_byte_u8(&[true, false, false]), 4u8);
+        // assert_eq!(bits_to_byte_u8(&[true, false, false, false]), 8u8);
+        // assert_eq!(bits_to_byte_u8(&[true, false, false, true]), 9u8);
+        // assert_eq!(bits_to_byte_u8(&[true, false, true, true]), 11u8);
 
         assert_eq!(bits_to_byte_u32(&[true, false]), 2u32);
         assert_eq!(bits_to_byte_u32(&[false, true, false]), 2u32);
@@ -193,67 +193,22 @@ mod tests
         assert_eq!(bits_to_byte_u64(&[true, false, true, true]), 11u64);
     }
 
-    #[test]
-    pub fn test_bits()
-    {
-        assert_eq!(
-            bits_u8(2u8),
-            [false, false, false, false, false, false, true, false]
-        );
+    // #[test]
+    // pub fn test_bits()
+    // {
+    //     assert_eq!(
+    //         bits_u8(2u8),
+    //         [false, false, false, false, false, false, true, false]
+    //     );
 
-        assert_eq!(
-            bits_u8(4u8),
-            [false, false, false, false, false, true, false, false]
-        );
+    //     assert_eq!(
+    //         bits_u8(4u8),
+    //         [false, false, false, false, false, true, false, false]
+    //     );
 
-        assert_eq!(
-            bits_u8(0x32u8),
-            [false, false, true, true, false, false, true, false]
-        );
-    }
-
-    #[test]
-    pub fn test_natural_indexing()
-    {
-        let index = NaturalIndex::from_u16(4161);
-        assert_eq!(index.constant, 16u64);
-        assert_eq!(index.natural, 1u64);
-        assert_eq!(index.offset, 24i64);
-
-        let index = NaturalIndex::from_u16(4114);
-        assert_eq!(index.constant, 4u64);
-        assert_eq!(index.natural, 2u64);
-        assert_eq!(index.offset, 20i64);
-
-        let index = NaturalIndex::from_u16(8581);
-        assert_eq!(index.constant, 24u64);
-        assert_eq!(index.natural, 5u64);
-        assert_eq!(index.offset, 64i64);
-
-        let index = NaturalIndex::from_u32(805324752);
-        assert_eq!(index.constant, 4u64);
-        assert_eq!(index.natural, 2000u64);
-        assert_eq!(index.offset, 16004i64);
-
-        let index = NaturalIndex::from_u32(111111);
-        assert_eq!(index.constant, 111111u64);
-        assert_eq!(index.natural, 0u64);
-        assert_eq!(index.offset, 111111i64);
-
-        let index = NaturalIndex::from_u64(2305843035428095952);
-        assert_eq!(index.constant, 400000u64);
-        assert_eq!(index.natural, 2000u64);
-        assert_eq!(index.offset, 416000i64);
-
-        let index = NaturalIndex::from_u32(591751049);
-        assert_eq!(index.constant, 214375u64);
-        assert_eq!(index.natural, 137u64);
-        assert_eq!(index.offset, 215471i64);
-
-        let index = NaturalIndex::from_u64(11529215072282871760);
-        assert_eq!(index.sign, -1i8);
-        assert_eq!(index.constant, 400000u64);
-        assert_eq!(index.natural, 2000u64);
-        assert_eq!(index.offset, -416000i64);
-    }
+    //     assert_eq!(
+    //         bits_u8(0x32u8),
+    //         [false, false, true, true, false, false, true, false]
+    //     );
+    // }
 }
