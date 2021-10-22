@@ -3,11 +3,12 @@ use crate::opcode::*;
 use crate::operand::*;
 use crate::argument::*;
 use crate::bits::*;
-
-const BLUE: (u8, u8, u8) = (98, 168, 209);
+use crate::options::Options;
+use crate::theme::*;
 
 pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
+    options: &Options,
     _bytes: &mut T,
     _byte0_bits: [bool; 8],
     op: OpCode,
@@ -15,7 +16,8 @@ pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item=u8>>(
 {
     disassemble_instruction(
         writer,
-        format!("{}", op).truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        // format!("{}", op).truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        color_opcode(format!("{}", op), options),
         None,
         None,
         None,
@@ -28,6 +30,7 @@ pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item=u8>>(
 
 pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
+    options: &Options,
     bytes: &mut T,
     byte0_bits: [bool; 8],
     op: OpCode,
@@ -77,7 +80,8 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
 
     disassemble_instruction(
         writer,
-        name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        // name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        color_opcode(format!("{}", name), options),
         None,
         Some(arg1),
         None,
@@ -90,6 +94,7 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
 
 pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
+    options: &Options,
     bytes: &mut T,
     byte0_bits: [bool; 8],
     op: OpCode,
@@ -321,7 +326,8 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
 
     disassemble_instruction(
         writer,
-        format!("{}", name).truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        // format!("{}", name).truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        color_opcode(format!("{}", name), options),
         op1,
         arg1,
         op2,
@@ -334,6 +340,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
 
 pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
+    options: &Options,
     bytes: &mut T,
     _byte0_bits: [bool; 8],
     op: OpCode,
@@ -363,7 +370,8 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
 
     disassemble_instruction(
         writer,
-        name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        // name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        color_opcode(format!("{}", name), options),
         Some(op1),
         None,
         Some(op2),
@@ -376,6 +384,7 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
 
 pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
+    options: &Options,
     bytes: &mut T,
     byte0_bits: [bool; 8],
     op: OpCode,
@@ -794,7 +803,8 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
 
     disassemble_instruction(
         writer,
-        name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        // name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        color_opcode(format!("{}", name), options),
         op1,
         arg1,
         None,
@@ -807,6 +817,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
 
 pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
+    options: &Options,
     bytes: &mut T,
     byte0_bits: [bool; 8],
     op: OpCode,
@@ -860,7 +871,8 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
 
     disassemble_instruction(
         writer,
-        name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        // name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        color_opcode(format!("{}", name), options),
         Some(
             Operand::new_general_purpose(operand1_value, operand1_is_indirect)
         ),
@@ -877,6 +889,7 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
 
 pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
+    options: &Options,
     bytes: &mut T,
     byte0_bits: [bool; 8],
     op: OpCode,
@@ -1256,7 +1269,8 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
 
     disassemble_instruction(
         writer,
-        name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        // name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        color_opcode(format!("{}", name), options),
         op1,
         arg1,
         op2,
