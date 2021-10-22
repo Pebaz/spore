@@ -84,6 +84,7 @@ mod bits;
 #[cfg(test)]
 mod tests;  // Integration tests
 
+use std::io;
 use std::io::prelude::*;
 use crate::opcode::OpCode;
 
@@ -102,7 +103,7 @@ fn main()
 
         loop
         {
-            if OpCode::disassemble(&mut bytes).is_none()
+            if OpCode::disassemble(&mut io::stdout(), &mut bytes).is_none()
             {
                 break;
             }

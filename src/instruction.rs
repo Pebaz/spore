@@ -6,14 +6,15 @@ use crate::bits::*;
 
 const BLUE: (u8, u8, u8) = (98, 168, 209);
 
-
-pub fn parse_instruction1<T: Iterator<Item=u8>>(
+pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item=u8>>(
+    writer: &mut W,
     _bytes: &mut T,
     _byte0_bits: [bool; 8],
     op: OpCode,
 ) -> Option<()>
 {
     disassemble_instruction(
+        writer,
         format!("{}", op).truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
         None,
         None,
@@ -25,7 +26,8 @@ pub fn parse_instruction1<T: Iterator<Item=u8>>(
     Some(())
 }
 
-pub fn parse_instruction2<T: Iterator<Item=u8>>(
+pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
+    writer: &mut W,
     bytes: &mut T,
     byte0_bits: [bool; 8],
     op: OpCode,
@@ -74,6 +76,7 @@ pub fn parse_instruction2<T: Iterator<Item=u8>>(
     };
 
     disassemble_instruction(
+        writer,
         name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
         None,
         Some(arg1),
@@ -85,7 +88,8 @@ pub fn parse_instruction2<T: Iterator<Item=u8>>(
     Some(())
 }
 
-pub fn parse_instruction3<T: Iterator<Item=u8>>(
+pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
+    writer: &mut W,
     bytes: &mut T,
     byte0_bits: [bool; 8],
     op: OpCode,
@@ -316,6 +320,7 @@ pub fn parse_instruction3<T: Iterator<Item=u8>>(
     name += &postfix;
 
     disassemble_instruction(
+        writer,
         format!("{}", name).truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
         op1,
         arg1,
@@ -327,7 +332,8 @@ pub fn parse_instruction3<T: Iterator<Item=u8>>(
     Some(())
 }
 
-pub fn parse_instruction4<T: Iterator<Item=u8>>(
+pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
+    writer: &mut W,
     bytes: &mut T,
     _byte0_bits: [bool; 8],
     op: OpCode,
@@ -356,6 +362,7 @@ pub fn parse_instruction4<T: Iterator<Item=u8>>(
     };
 
     disassemble_instruction(
+        writer,
         name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
         Some(op1),
         None,
@@ -367,7 +374,8 @@ pub fn parse_instruction4<T: Iterator<Item=u8>>(
     Some(())
 }
 
-pub fn parse_instruction5<T: Iterator<Item=u8>>(
+pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
+    writer: &mut W,
     bytes: &mut T,
     byte0_bits: [bool; 8],
     op: OpCode,
@@ -785,6 +793,7 @@ pub fn parse_instruction5<T: Iterator<Item=u8>>(
     };
 
     disassemble_instruction(
+        writer,
         name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
         op1,
         arg1,
@@ -796,7 +805,8 @@ pub fn parse_instruction5<T: Iterator<Item=u8>>(
     Some(())
 }
 
-pub fn parse_instruction6<T: Iterator<Item=u8>>(
+pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
+    writer: &mut W,
     bytes: &mut T,
     byte0_bits: [bool; 8],
     op: OpCode,
@@ -849,6 +859,7 @@ pub fn parse_instruction6<T: Iterator<Item=u8>>(
     };
 
     disassemble_instruction(
+        writer,
         name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
         Some(
             Operand::new_general_purpose(operand1_value, operand1_is_indirect)
@@ -864,7 +875,8 @@ pub fn parse_instruction6<T: Iterator<Item=u8>>(
     Some(())
 }
 
-pub fn parse_instruction7<T: Iterator<Item=u8>>(
+pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
+    writer: &mut W,
     bytes: &mut T,
     byte0_bits: [bool; 8],
     op: OpCode,
@@ -1243,6 +1255,7 @@ pub fn parse_instruction7<T: Iterator<Item=u8>>(
     };
 
     disassemble_instruction(
+        writer,
         name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
         op1,
         arg1,
@@ -1259,7 +1272,8 @@ pub fn parse_instruction7<T: Iterator<Item=u8>>(
 // TODO(pbz): Only output text once. Build in buffer
 // TODO(pbz): Invest in some left/right justification
 // TODO(pbz): Justify in columns maybe?
-pub fn disassemble_instruction(
+pub fn disassemble_instruction<W: std::io::Write>(
+    writer: &mut W,
     instruction: String,  // Must concatenate postfixes manually
     operand1: Option<Operand>,
     argument1: Option<Argument>,
@@ -1268,32 +1282,32 @@ pub fn disassemble_instruction(
     comment: Option<String>,
 )
 {
-    print!("{}", instruction);
+    write!(writer, "{}", instruction).unwrap();
 
     if let Some(op1) = operand1
     {
-        print!(" {}", op1);
+        write!(writer, " {}", op1).unwrap();
     }
 
     if let Some(arg1) = argument1
     {
         match arg1
         {
-            Argument::Index16(_index) => print!("{}", arg1),
-            Argument::Index32(_index) => print!("{}", arg1),
-            Argument::Index64(_index) => print!("{}", arg1),
-            _ => print!(" {}", arg1),
+            Argument::Index16(_index) => write!(writer, "{}", arg1).unwrap(),
+            Argument::Index32(_index) => write!(writer, "{}", arg1).unwrap(),
+            Argument::Index64(_index) => write!(writer, "{}", arg1).unwrap(),
+            _ => write!(writer, " {}", arg1).unwrap(),
         }
     }
 
     if operand2.is_some() || argument2.is_some()
     {
-        print!(",");
+        write!(writer, ",").unwrap();
     }
 
     if let Some(ref op2) = operand2
     {
-        print!(" {}", op2);
+        write!(writer, " {}", op2).unwrap();
     }
 
     if let Some(arg2) = argument2
@@ -1302,30 +1316,30 @@ pub fn disassemble_instruction(
         {
             Argument::Index16(_index) =>
             {
-                if operand2.is_none() { print!(" "); }
-                print!("{}", arg2)
+                if operand2.is_none() { write!(writer, " ").unwrap(); }
+                write!(writer, "{}", arg2).unwrap();
             }
 
             Argument::Index32(_index) =>
             {
-                if operand2.is_none() { print!(" "); }
-                print!("{}", arg2)
+                if operand2.is_none() { write!(writer, " ").unwrap(); }
+                write!(writer, "{}", arg2).unwrap();
             }
 
             Argument::Index64(_index) =>
             {
-                if operand2.is_none() { print!(" "); }
-                print!("{}", arg2)
+                if operand2.is_none() { write!(writer, " ").unwrap(); }
+                write!(writer, "{}", arg2).unwrap();
             }
 
-            _ => print!(" {}", arg2),
+            _ => write!(writer, " {}", arg2).unwrap(),
         }
     }
 
     // TODO(pbz): Adhere to a column so they line up
     if let Some(line_comment) = comment
     {
-        print!("  ;; {}", line_comment);
+        write!(writer, "  ;; {}", line_comment).unwrap();
     }
 
     println!("");

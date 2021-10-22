@@ -10,6 +10,10 @@ fn write<W: Write>(writer: &mut W)
 #[test]
 pub fn test_instruction_disassembly()
 {
+    // 1. Pass bytecode to be disassembled
+    // 2. Capture disassembly text
+    // 3. Compare against static string
+
     // OpCode::disassemble(&mut bytes).is_none()
     // assert_eq!(1, 1);
 
@@ -27,4 +31,6 @@ pub fn test_instruction_disassembly()
     write(&mut cursor);
 
     println!("-> {}", String::from_utf8(cursor.get_ref().clone()).unwrap());
+
+    "RET"
 }
