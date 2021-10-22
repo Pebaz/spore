@@ -80,6 +80,8 @@ mod argument;
 mod natural_index;
 mod instruction;
 mod bits;
+mod options;
+mod theme;
 
 #[cfg(test)]
 mod tests;  // Integration tests
@@ -87,11 +89,18 @@ mod tests;  // Integration tests
 use std::io;
 use std::io::prelude::*;
 use crate::opcode::OpCode;
+use crate::options::Options;
+use crate::theme::*;
 
 /// Reads in an EFI Bytecode file from STDIN and prints the disassembly.
 fn main()
 {
     let mut show_help = true;
+    let options = Options
+    {
+        theme: Some(SPORE_THEME),
+    };
+
     for bytecode_file in std::env::args().skip(1).take(1)
     {
         show_help = false;
@@ -103,7 +112,7 @@ fn main()
 
         loop
         {
-            if OpCode::disassemble(&mut io::stdout(), &mut bytes).is_none()
+            if OpCode::disassemble(&options, &mut io::stdout(), &mut bytes).is_none()
             {
                 break;
             }

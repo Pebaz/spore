@@ -1,4 +1,5 @@
 use crate::instruction::*;
+use crate::options::Options;
 use crate::bits::*;
 
 #[derive(Debug)]
@@ -213,6 +214,7 @@ impl OpCode
 {
     /// Bytes are read from left to right. Bits are read from right to left.
     pub fn disassemble<T: Iterator<Item=u8>, W: std::io::Write>(
+        options: &Options,
         writer: &mut W,
         bytes: &mut T
     ) -> Option<()>

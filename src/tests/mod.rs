@@ -11,9 +11,13 @@ pub fn test_instruction_disassembly()
     // OpCode::disassemble(&mut bytes).is_none()
     // assert_eq!(1, 1);
 
+    let options = Options
+    {
+        theme: None,
+    };
     let cursor = &mut Cursor::new(Vec::with_capacity(50));
 
-    OpCode::disassemble(cursor, &mut vec![OpCode::RET.to()].into_iter());
+    OpCode::disassemble(&options, cursor, &mut vec![OpCode::RET.to()].into_iter());
 
     println!("-> {}", String::from_utf8(cursor.get_ref().clone()).unwrap());
 
