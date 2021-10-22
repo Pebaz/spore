@@ -62,6 +62,75 @@ pub enum OpCode
     XOR = 0x16
 }
 
+impl std::convert::TryFrom<OpCode> for u8
+{
+    type Error = ();
+
+    fn try_from(v: OpCode) -> Result<Self, Self::Error>
+    {
+        match v
+        {
+            OpCode::ADD => Ok(0x0C),
+            OpCode::AND => Ok(0x14),
+            OpCode::ASHR => Ok(0x19),
+            OpCode::BREAK => Ok(0x00),
+            OpCode::CALL => Ok(0x03),
+            OpCode::CMPeq => Ok(0x05),
+            OpCode::CMPlte => Ok(0x06),
+            OpCode::CMPgte => Ok(0x07),
+            OpCode::CMPulte => Ok(0x08),
+            OpCode::CMPugte => Ok(0x09),
+            OpCode::CMPIeq => Ok(0x2D),
+            OpCode::CMPIlte => Ok(0x2E),
+            OpCode::CMPIgte => Ok(0x2F),
+            OpCode::CMPIulte => Ok(0x30),
+            OpCode::CMPIugte => Ok(0x31),
+            OpCode::DIV => Ok(0x10),
+            OpCode::DIVU => Ok(0x11),
+            OpCode::EXTNDB => Ok(0x1A),
+            OpCode::EXTNDD => Ok(0x1C),
+            OpCode::EXTNDW => Ok(0x1B),
+            OpCode::JMP => Ok(0x01),
+            OpCode::JMP8 => Ok(0x02),
+            OpCode::LOADSP => Ok(0x29),
+            OpCode::MOD => Ok(0x12),
+            OpCode::MODU => Ok(0x13),
+            OpCode::MOVbw => Ok(0x1D),
+            OpCode::MOVww => Ok(0x1E),
+            OpCode::MOVdw => Ok(0x1F),
+            OpCode::MOVqw => Ok(0x20),
+            OpCode::MOVbd => Ok(0x21),
+            OpCode::MOVwd => Ok(0x22),
+            OpCode::MOVdd => Ok(0x23),
+            OpCode::MOVqd => Ok(0x24),
+            OpCode::MOVqq => Ok(0x28),
+            OpCode::MOVI => Ok(0x37),
+            OpCode::MOVIn => Ok(0x38),
+            OpCode::MOVnw => Ok(0x32),
+            OpCode::MOVnd => Ok(0x33),
+            OpCode::MOVREL => Ok(0x39),
+            OpCode::MOVsnw => Ok(0x25),
+            OpCode::MOVsnd => Ok(0x26),
+            OpCode::MUL => Ok(0x0E),
+            OpCode::MULU => Ok(0x0F),
+            OpCode::NEG => Ok(0x0B),
+            OpCode::NOT => Ok(0x0A),
+            OpCode::OR => Ok(0x15),
+            OpCode::POP => Ok(0x2C),
+            OpCode::POPn => Ok(0x36),
+            OpCode::PUSH => Ok(0x2B),
+            OpCode::PUSHn => Ok(0x35),
+            OpCode::RET => Ok(0x04),
+            OpCode::SHL => Ok(0x17),
+            OpCode::SHR => Ok(0x18),
+            OpCode::STORESP => Ok(0x2A),
+            OpCode::SUB => Ok(0x0D),
+            OpCode::XOR => Ok(0x16),
+            _ => Err(()),
+        }
+    }
+}
+
 impl std::convert::TryFrom<u8> for OpCode
 {
     type Error = ();
@@ -257,5 +326,10 @@ impl OpCode
                 parse_instruction7(writer, bytes, byte0_bits, op)
             }
         }
+    }
+
+    pub fn to(self) -> u8
+    {
+        self.try_into().unwrap()
     }
 }
