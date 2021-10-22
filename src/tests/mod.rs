@@ -15,6 +15,14 @@ fn dis(options: &Options, cursor: &mut Cursor<Vec<u8>>, bytecode: &[u8]) -> Stri
     chars.as_str().to_string()
 }
 
+fn byte(bit8: u8, bit7: u8, op: OpCode) -> u8
+{
+    let mut byte = op.to();
+    if bit8 > 0 { byte |= 1 << 7; }
+    if bit7 > 0 { byte |= 1 << 6; }
+    byte
+}
+
 #[test]
 pub fn test_instruction_disassembly()
 {
@@ -39,4 +47,29 @@ pub fn test_instruction_disassembly()
         dis(opts, cur, &[OpCode::LOADSP.to(), 0b00010001])
     );
     assert_eq!("BREAK 3", dis(opts, cur, &[OpCode::BREAK.to(), 0b00000011]));
+
+    assert_eq!(
+        "JMP8 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::JMP8)][..],
+                &(-3i8).to_be_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "JMP8 -3",
+        dis(
+            opts,
+            cur,
+            &[
+                // &[OpCode::JMP8.to()][..],
+                &[byte(0, 1, OpCode::JMP8)][..],
+                &(-3i8).to_be_bytes()[..],
+            ].concat()
+        )
+    );
 }
