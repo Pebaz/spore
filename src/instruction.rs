@@ -1355,5 +1355,5 @@ pub fn disassemble_instruction<W: std::io::Write>(
         write!(writer, "  ;; {}", line_comment).unwrap();
     }
 
-    println!("");
+    writeln!(writer, "").unwrap();
 }
