@@ -3,7 +3,17 @@ use super::*;
 
 fn dis(options: &Options, cursor: &mut Cursor<Vec<u8>>, bytecode: &[u8]) -> String
 {
-    OpCode::disassemble(&options, cursor, &mut bytecode.into_iter().cloned());
+    let result = OpCode::disassemble(
+        &options,
+        cursor,
+        &mut bytecode.into_iter().cloned()
+    );
+
+    match result
+    {
+        Ok(_) => assert!(true),
+        Err(msg) => assert!(false, "{}", msg.to_string()),
+    }
 
     let disassembly = String::from_utf8(cursor.get_ref().clone()).unwrap();
     cursor.get_mut().clear();

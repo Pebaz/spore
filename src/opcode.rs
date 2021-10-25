@@ -216,7 +216,7 @@ impl OpCode
         options: &Options,
         writer: &mut W,
         bytes: &mut T
-    ) -> Option<()>
+    ) -> Result<(), String>
     {
         let byte0 = if let Some(byte) = bytes.next()
         {
@@ -224,7 +224,7 @@ impl OpCode
         }
         else
         {
-            return None;
+            return Err(String::from("Completed Disassembly"));
         };
 
         // * Using reverse number parsing to make indexing the individual bits

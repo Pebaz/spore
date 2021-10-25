@@ -84,6 +84,7 @@ mod tests;  // Integration tests
 
 use std::io;
 use std::io::prelude::*;
+use colored::*;
 use crate::opcode::OpCode;
 use crate::options::Options;
 use crate::theme::*;
@@ -101,16 +102,34 @@ fn main()
     {
         show_help = false;
 
-        let file = std::fs::File::open(bytecode_file.clone()).expect(
-            format!("File {} does not exist", bytecode_file).as_str()
-        );
+        let file = match std::fs::File::open(bytecode_file.clone())
+        {
+            Ok(file) => file,
+            Err(msg) =>
+            {
+                println!("{}", format!("{}", msg).red());
+                return;
+            }
+        };
         let mut bytes = file.bytes().map(|b| b.unwrap());
 
         loop
         {
-            if OpCode::disassemble(&options, &mut io::stdout(), &mut bytes).is_none()
+            let result = OpCode::disassemble(
+                &options,
+                &mut io::stdout(),
+                &mut bytes
+            );
+
+            match result
             {
-                break;
+                Ok(_) => (),
+
+                Err(msg) =>
+                {
+                    println!("{}", msg.blue());
+                    break;
+                }
             }
         }
     }
