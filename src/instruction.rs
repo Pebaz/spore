@@ -76,9 +76,11 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
         {
             if byte1 == 0
             {
-                panic!(
+                let msg = String::from(
                     "Runaway program break (found 2 zeros in a row, BREAK 0)"
                 );
+
+                return Err(color_error(msg, options));
             }
 
             Argument::ImmediateU16(byte1 as u16)
@@ -437,7 +439,12 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
                 else
                 {
-                    panic!("Immediate data not supported for CMPI");
+                    let msg = format!(
+                        "Immediate data not supported for {}",
+                        op
+                    );
+
+                    return Err(color_error(msg, options));
                 };
 
                 Some(arg)
@@ -527,7 +534,12 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
                 else
                 {
-                    panic!("Immediate data not supported for CMPI");
+                    let msg = format!(
+                        "Immediate data not supported for {}",
+                        op
+                    );
+
+                    return Err(color_error(msg, options));
                 };
 
                 Some(arg)
@@ -607,7 +619,12 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
                 else
                 {
-                    panic!("Immediate data not supported for CMPI");
+                    let msg = format!(
+                        "Immediate data not supported for {}",
+                        op
+                    );
+
+                    return Err(color_error(msg, options));
                 };
 
                 Some(arg)
@@ -684,7 +701,12 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
                 else
                 {
-                    panic!("Immediate data not supported for CMPI");
+                    let msg = format!(
+                        "Immediate data not supported for {}",
+                        op
+                    );
+
+                    return Err(color_error(msg, options));
                 };
 
                 Some(arg)

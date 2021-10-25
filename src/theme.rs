@@ -4,12 +4,14 @@ use crate::options::Options;
 pub const SPORE_THEME: Theme = Theme
 {
     opcode: color(98, 168, 209),
+    error: color(255, 0, 55),
 };
 
 pub struct Theme
 {
     // (Foreground, Background, Style)
     pub opcode: Color,  // (Option<Color>, Option<Color>, Option<Style>),
+    pub error: Color,
     // pub operand: Color,
     // pub index: Color,
     // pub immediate: Color,
@@ -39,6 +41,18 @@ pub fn color_opcode(string: String, options: &Options) -> String
     if let Some(color_theme) = &options.theme
     {
         colored_string(string, color_theme.opcode)
+    }
+    else
+    {
+        string
+    }
+}
+
+pub fn color_error(string: String, options: &Options) -> String
+{
+    if let Some(color_theme) = &options.theme
+    {
+        colored_string(string, color_theme.error)
     }
     else
     {

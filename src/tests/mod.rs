@@ -1502,7 +1502,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::JMP), 0b00000001][..],
                 &(-3i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1515,7 +1514,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::JMP), 0b00010001][..],
                 &(-3i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1528,7 +1526,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::JMP), 0b00001001][..],
                 &(2954019116u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1541,7 +1538,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::JMP), 0b00011001][..],
                 &(2954019116u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1554,7 +1550,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::JMP), 0b00000001][..],
                 &(1000u64).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1567,7 +1562,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::JMP), 0b00010001][..],
                 &(1000u64).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1580,7 +1574,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVI), 0b00000001][..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1593,7 +1586,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVI), 0b00010001][..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1606,7 +1598,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVI), 0b00100001][..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1619,7 +1610,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVI), 0b00110001][..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1632,7 +1622,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::MOVI), 0b00000001][..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1645,7 +1634,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::MOVI), 0b00010001][..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1658,7 +1646,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::MOVI), 0b00100001][..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1671,7 +1658,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::MOVI), 0b00110001][..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1684,7 +1670,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::MOVI), 0b00000001][..],
                 &(1000u64).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1697,7 +1682,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::MOVI), 0b00010001][..],
                 &(1000u64).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1710,7 +1694,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::MOVI), 0b00100001][..],
                 &(1000u64).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1723,7 +1706,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::MOVI), 0b00110001][..],
                 &(1000u64).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1736,7 +1718,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 0, OpCode::CMPIeq), 0b00000001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1749,7 +1730,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::CMPIeq), 0b00000001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1762,7 +1742,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 0, OpCode::CMPIlte), 0b00000001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1775,7 +1754,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::CMPIlte), 0b00000001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1788,7 +1766,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 0, OpCode::CMPIgte), 0b00000001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1801,7 +1778,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::CMPIgte), 0b00000001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1814,7 +1790,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 0, OpCode::CMPIulte), 0b00000001][..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1827,7 +1802,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::CMPIulte), 0b00000001][..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1840,7 +1814,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 0, OpCode::CMPIugte), 0b00000001][..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1853,7 +1826,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::CMPIugte), 0b00000001][..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1866,7 +1838,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::CMPIeq), 0b00000001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1879,7 +1850,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::CMPIeq), 0b00000001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1892,7 +1862,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::CMPIlte), 0b00000001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1905,7 +1874,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::CMPIlte), 0b00000001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1918,7 +1886,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::CMPIgte), 0b00000001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1931,7 +1898,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::CMPIgte), 0b00000001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1944,7 +1910,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::CMPIulte), 0b00000001][..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1957,7 +1922,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::CMPIulte), 0b00000001][..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1970,7 +1934,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::CMPIugte), 0b00000001][..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1983,7 +1946,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::CMPIugte), 0b00000001][..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -1997,7 +1959,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 0, OpCode::CMPIeq), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2011,7 +1972,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 1, OpCode::CMPIeq), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2025,7 +1985,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 0, OpCode::CMPIlte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2039,7 +1998,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 1, OpCode::CMPIlte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2053,7 +2011,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 0, OpCode::CMPIgte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2067,7 +2024,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 1, OpCode::CMPIgte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2081,7 +2037,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 0, OpCode::CMPIulte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2095,7 +2050,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 1, OpCode::CMPIulte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2109,7 +2063,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 0, OpCode::CMPIugte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2123,7 +2076,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 1, OpCode::CMPIugte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(1000u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2137,7 +2089,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 0, OpCode::CMPIeq), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2151,7 +2102,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::CMPIeq), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2165,7 +2115,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 0, OpCode::CMPIlte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2179,7 +2128,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::CMPIlte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2193,7 +2141,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 0, OpCode::CMPIgte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2207,7 +2154,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::CMPIgte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2221,7 +2167,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 0, OpCode::CMPIulte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2235,7 +2180,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::CMPIulte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2249,7 +2193,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 0, OpCode::CMPIugte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2263,7 +2206,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::CMPIugte), 0b00011001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(1000u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2276,7 +2218,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVIn), 0b00000001][..],
                 &(36879u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2289,7 +2230,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::MOVIn), 0b00000001][..],
                 &(2954019116u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2302,7 +2242,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::MOVIn), 0b00000001][..],
                 &(11529215048034579760u64).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2316,7 +2255,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 1, OpCode::MOVIn), 0b01001001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(36879u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2330,7 +2268,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 0, OpCode::MOVIn), 0b01001001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(2954019116u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2344,7 +2281,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::MOVIn), 0b01001001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(11529215048034579760u64).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2357,7 +2293,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVREL), 0b00000001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2370,7 +2305,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 0, OpCode::MOVREL), 0b00000001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2383,7 +2317,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(1, 1, OpCode::MOVREL), 0b00000001][..],
                 &(-1000i64).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2397,7 +2330,6 @@ pub fn test_instruction_disassembly()
                 &[byte(0, 1, OpCode::MOVREL), 0b01001001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2411,7 +2343,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 0, OpCode::MOVREL), 0b01001001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2425,7 +2356,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::MOVREL), 0b01001001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i64).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2438,7 +2368,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVnw), 0b00100001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2451,7 +2380,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVnd), 0b00100001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2464,7 +2392,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVnw), 0b00101001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2477,7 +2404,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVnd), 0b00101001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2490,7 +2416,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVnw), 0b10101001][..],
                 &(36879u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2503,7 +2428,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVnd), 0b10101001][..],
                 &(2954019116u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2517,7 +2441,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::MOVnw), 0b00101001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2531,7 +2454,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::MOVnd), 0b00101001][..],
                 &(2954019116u32).to_le_bytes()[..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2545,7 +2467,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::MOVnw), 0b10101001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(36879u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2559,7 +2480,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::MOVnd), 0b10101001][..],
                 &(2954019116u32).to_le_bytes()[..],
                 &(2954019116u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2572,7 +2492,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVsnw), 0b00100001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2585,7 +2504,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVsnd), 0b00100001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2598,7 +2516,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVsnw), 0b00101001][..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2611,7 +2528,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVsnd), 0b00101001][..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2624,7 +2540,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVsnw), 0b10101001][..],
                 &(36879u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2637,7 +2552,6 @@ pub fn test_instruction_disassembly()
             &[
                 &[byte(0, 1, OpCode::MOVsnd), 0b10101001][..],
                 &(2954019116u32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2651,7 +2565,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::MOVsnw), 0b00101001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(-1000i16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2665,7 +2578,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::MOVsnd), 0b00101001][..],
                 &(2954019116u32).to_le_bytes()[..],
                 &(-1000i32).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2679,7 +2591,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::MOVsnw), 0b10101001][..],
                 &(36879u16).to_le_bytes()[..],
                 &(36879u16).to_le_bytes()[..],
-
             ].concat()
         )
     );
@@ -2693,7 +2604,6 @@ pub fn test_instruction_disassembly()
                 &[byte(1, 1, OpCode::MOVsnd), 0b10101001][..],
                 &(2954019116u32).to_le_bytes()[..],
                 &(2954019116u32).to_le_bytes()[..],
-
             ].concat()
         )
     );

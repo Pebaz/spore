@@ -89,7 +89,7 @@ use crate::opcode::OpCode;
 use crate::options::Options;
 use crate::theme::*;
 
-/// Reads in an EFI Bytecode file from STDIN and prints the disassembly.
+/// Reads in an EFI Bytecode filename from STDIN and prints the disassembly.
 fn main()
 {
     let mut show_help = true;
@@ -127,7 +127,7 @@ fn main()
 
                 Err(msg) =>
                 {
-                    println!("{}", msg.blue());
+                    println!("{}", msg);
                     break;
                 }
             }
