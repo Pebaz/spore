@@ -5,22 +5,6 @@ use crate::bits::*;
 use crate::options::Options;
 use crate::theme::*;
 
-/*
-let mut value = [0u8; 4];
-
-for i in 0 .. value.len()
-{
-    TODO(pbz): These fail hard. Print better message
-    ? Perhaps a 16 bit was passed to a 32 bit?
-    ? "32-bit value expected, found less than that"
-    value[i] = bytes.next().expect(
-        format!("Unexpected end of byte stream while processing instruction: {}", op).as_str()
-    );
-value[i] = bytes.next().unwrap();
-}
-*/
-
-
 fn read_value<T: Iterator<Item=u8>, const WIDTH: usize>(
     bytes: &mut T
 ) -> Result<[u8; WIDTH], String>
@@ -523,7 +507,6 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 )
             );
 
-            // TODO(pbz): Make this into a function for all to use
             let arg1 = if operand1_index_present
             {
                 let value = read_value::<T, 2>(bytes)?;

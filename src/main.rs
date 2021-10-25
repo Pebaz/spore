@@ -68,8 +68,6 @@ Instruction Type Breakdown:
     RET
 */
 
-// TODO(pbz): Replace panics/unreachable code with better error messages.
-
 mod opcode;
 mod operand;
 mod argument;
