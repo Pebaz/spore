@@ -55,7 +55,7 @@ pub fn test_instruction_disassembly()
             cur,
             &[
                 &[byte(0, 0, OpCode::JMP8)][..],
-                &(-3i8).to_be_bytes()[..],
+                &(-3i8).to_le_bytes()[..],
             ].concat()
         )
     );
@@ -68,7 +68,7 @@ pub fn test_instruction_disassembly()
             &[
                 // Test that CC or CS have not effect on unconditional jump
                 &[byte(0, 1, OpCode::JMP8)][..],
-                &(-3i8).to_be_bytes()[..],
+                &(-3i8).to_le_bytes()[..],
             ].concat()
         )
     );
@@ -80,7 +80,7 @@ pub fn test_instruction_disassembly()
             cur,
             &[
                 &[byte(1, 0, OpCode::JMP8)][..],
-                &(-3i8).to_be_bytes()[..],
+                &(-3i8).to_le_bytes()[..],
             ].concat()
         )
     );
@@ -92,7 +92,7 @@ pub fn test_instruction_disassembly()
             cur,
             &[
                 &[byte(1, 1, OpCode::JMP8)][..],
-                &(-3i8).to_be_bytes()[..],
+                &(-3i8).to_le_bytes()[..],
             ].concat()
         )
     );
@@ -2689,4 +2689,2174 @@ pub fn test_instruction_disassembly()
     );
 
     // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+
+    assert_eq!(
+        "MOVbw @R1(-3, -3), R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVbw), 0b00101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVww @R1(-3, -3), R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVww), 0b00101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVdw @R1(-3, -3), R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVdw), 0b00101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqw @R1(-3, -3), R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVqw), 0b00101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVbw @R1(-3, -3), @R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVbw), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVww @R1(-3, -3), @R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVww), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVdw @R1(-3, -3), @R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVdw), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqw @R1(-3, -3), @R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVqw), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVbw R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVbw), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVww R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVww), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVdw R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVdw), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqw R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVqw), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVbw @R1(-3, -3), @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVbw), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVww @R1(-3, -3), @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVww), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVdw @R1(-3, -3), @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVdw), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqw @R1(-3, -3), @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVqw), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVbd @R1(-300, -300), R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVbd), 0b00101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVwd @R1(-300, -300), R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVwd), 0b00101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVdd @R1(-300, -300), R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVdd), 0b00101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqd @R1(-300, -300), R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVqd), 0b00101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVbd @R1(-300, -300), @R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVbd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVwd @R1(-300, -300), @R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVwd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVdd @R1(-300, -300), @R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVdd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqd @R1(-300, -300), @R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVqd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVbd R1, @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVbd), 0b10100001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVwd R1, @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVwd), 0b10100001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVdd R1, @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVdd), 0b10100001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqd R1, @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVqd), 0b10100001][..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVbd @R1(-300, -300), @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVbd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVwd @R1(-300, -300), @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVwd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVdd @R1(-300, -300), @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVdd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqd @R1(-300, -300), @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVqd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+                &(2954019116u32).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqq @R1(-30000, -30000), R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVqq), 0b00101001][..],
+                &(11529215048034579760u64).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqq @R1(-30000, -30000), @R2",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVqq), 0b10101001][..],
+                &(11529215048034579760u64).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqq R1, @R2(-30000, -30000)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVqq), 0b10100001][..],
+                &(11529215048034579760u64).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVqq @R1(-30000, -30000), @R2(-30000, -30000)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVqq), 0b10101001][..],
+                &(11529215048034579760u64).to_le_bytes()[..],
+                &(11529215048034579760u64).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ADD32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::ADD), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ADD32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::ADD), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ADD32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::ADD), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ADD64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::ADD), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ADD64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::ADD), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ADD64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::ADD), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "AND32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::AND), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "AND32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::AND), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "AND32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::AND), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "AND64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::AND), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "AND64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::AND), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "AND64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::AND), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ASHR32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::ASHR), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ASHR32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::ASHR), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ASHR32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::ASHR), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ASHR64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::ASHR), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ASHR64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::ASHR), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "ASHR64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::ASHR), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIV32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::DIV), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIV32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::DIV), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIV32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::DIV), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIV64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::DIV), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIV64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::DIV), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIV64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::DIV), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIVU32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::DIVU), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIVU32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::DIVU), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIVU32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::DIVU), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIVU64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::DIVU), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIVU64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::DIVU), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "DIVU64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::DIVU), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDB32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::EXTNDB), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDB32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::EXTNDB), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDB32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::EXTNDB), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDB64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::EXTNDB), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDB64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::EXTNDB), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDB64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::EXTNDB), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDD32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::EXTNDD), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDD32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::EXTNDD), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDD32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::EXTNDD), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDD64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::EXTNDD), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDD64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::EXTNDD), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDD64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::EXTNDD), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDW32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::EXTNDW), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDW32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::EXTNDW), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDW32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::EXTNDW), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDW64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::EXTNDW), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDW64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::EXTNDW), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "EXTNDW64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::EXTNDW), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOD32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOD), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOD32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOD), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOD32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOD), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOD64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOD), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOD64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOD), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOD64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOD), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MODU32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MODU), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MODU32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MODU), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MODU32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MODU), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MODU64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MODU), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MODU64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MODU), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MODU64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MODU), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHL32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::SHL), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHL32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::SHL), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHL32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::SHL), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHL64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::SHL), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHL64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::SHL), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHL64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::SHL), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHR32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::SHR), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHR32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::SHR), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHR32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::SHR), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHR64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::SHR), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHR64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::SHR), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SHR64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::SHR), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SUB32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::SUB), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SUB32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::SUB), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SUB32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::SUB), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SUB64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::SUB), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SUB64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::SUB), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "SUB64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::SUB), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "XOR32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::XOR), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "XOR32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::XOR), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "XOR32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::XOR), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "XOR64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::XOR), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "XOR64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::XOR), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "XOR64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::XOR), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPeq32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPeq), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPeq32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPeq), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPeq32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPeq), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPeq64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPeq), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPeq64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPeq), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPeq64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPeq), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPlte32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPlte), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPlte32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPlte), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPlte32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPlte), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPlte64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPlte), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPlte64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPlte), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPlte64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPlte), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPgte32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPgte), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPgte32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPgte), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPgte32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPgte), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPgte64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPgte), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPgte64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPgte), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPgte64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPgte), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPulte32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPulte), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPulte32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPulte), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPulte32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPulte), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPulte64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPulte), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPulte64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPulte), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPulte64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPulte), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPugte32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPugte), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPugte32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPugte), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPugte32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPugte), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPugte64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPugte), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPugte64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPugte), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPugte64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPugte), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MUL32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MUL), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MUL32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MUL), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MUL32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MUL), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MUL64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MUL), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MUL64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MUL), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MUL64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MUL), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MULU32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MULU), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MULU32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MULU), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MULU32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MULU), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MULU64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MULU), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MULU64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MULU), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MULU64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MULU), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NEG32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::NEG), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NEG32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::NEG), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NEG32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::NEG), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NEG64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::NEG), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NEG64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::NEG), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NEG64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::NEG), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NOT32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::NOT), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NOT32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::NOT), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NOT32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::NOT), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NOT64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::NOT), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NOT64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::NOT), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "NOT64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::NOT), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "OR32 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::OR), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "OR32 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::OR), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "OR32 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::OR), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "OR64 R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::OR), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "OR64 R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::OR), 0b10100001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "OR64 @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::OR), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+            ].concat()
+        )
+    );
 }
