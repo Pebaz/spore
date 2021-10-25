@@ -15,8 +15,6 @@ pub enum Argument
 
 impl std::fmt::Display for Argument
 {
-    // TODO(pbz): May want to remove + from here and only use - because it
-    // TODO(pbz): doesn't make sense for BREAK CODE
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result
     {
         match self

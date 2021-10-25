@@ -49,9 +49,6 @@ impl std::fmt::Display for Operand
             {
                 assert!((0u8 ..= 7u8).contains(&index));
 
-                // TODO(pbz): Is it inconsistent to not have a space here?
-                // TODO(pbz): Other natural index arguments have a space.
-
                 write!(
                     f,
                     "{}R{}",

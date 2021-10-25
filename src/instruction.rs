@@ -120,7 +120,6 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
         _ => (),
     }
 
-    // TODO(pbz): Have postfixes colored differently? =)
     let (op1, arg1, op2, arg2, comment) = match op
     {
         // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -159,7 +158,6 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
                     value[i] = bytes.next().unwrap();
                 }
 
-                // TODO(pbz): For absolute, display in hex
                 Some(Argument::ImmediateI64(i64::from_le_bytes(value)))
             }
             else
@@ -237,7 +235,6 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
                     value[i] = bytes.next().unwrap();
                 }
 
-                // TODO(pbz): Check if absolute, then display in hex
                 Some(Argument::ImmediateI64(i64::from_le_bytes(value)))
             }
             else
@@ -396,7 +393,6 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
 ) -> Option<()>
 {
     let mut name = format!("{}", op);
-    // TODO(pbz): Have postfixes colored differently? =)
     let mut postfixes = String::with_capacity(7);
 
     let (op1, arg1, arg2) = match op
@@ -831,7 +827,6 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
     let mut name = format!("{}", op);
     let immediate_data_present = byte0_bits[7];
 
-    // TODO(pbz): Have postfixes colored differently? =)
     name += if byte0_bits[6]
     {
         "64"
@@ -1288,7 +1283,6 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
 
 // TODO(pbz): Output the actual bytecode bytes (machine code) side by side
 // TODO(pbz): so that you can count the bytes for relative jumps!
-// TODO(pbz): Only output text once. Build in buffer
 // TODO(pbz): Invest in some left/right justification
 // TODO(pbz): Justify in columns maybe?
 pub fn disassemble_instruction<W: std::io::Write>(

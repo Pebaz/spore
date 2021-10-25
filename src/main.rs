@@ -68,11 +68,7 @@ Instruction Type Breakdown:
     RET
 */
 
-// TODO(pbz): Perhaps put all the "Behaviors and Restrictions" bullet points in
-// TODO(pbz): comments by each instruction so that you can read exact behavior.
-
 // TODO(pbz): Replace panics/unreachable code with better error messages.
-// TODO(pbz): I'm not sure if natural indexes need to be read using LE. BE?
 
 mod opcode;
 mod operand;
@@ -117,8 +113,6 @@ fn main()
                 break;
             }
         }
-
-        // TODO(pbz): Bytes can be left over in the instruction. Process them.
     }
 
     if show_help

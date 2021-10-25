@@ -218,12 +218,6 @@ impl OpCode
         bytes: &mut T
     ) -> Option<()>
     {
-        // TODO(pbz): This doesn't really serve a purpose, but could be useful
-        // if options.theme.is_none()
-        // {
-        //     colored::control::set_override(false);
-        // }
-
         let byte0 = if let Some(byte) = bytes.next()
         {
             byte
