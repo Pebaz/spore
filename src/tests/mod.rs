@@ -1484,5 +1484,1209 @@ pub fn test_instruction_disassembly()
         dis(opts, cur, &[byte(0, 1, OpCode::OR), 0b10101001])
     );
 
-    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+    assert_eq!(
+        "JMP32 R1 -3  ;; Absolute Address",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::JMP), 0b00000001][..],
+                &(-3i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "JMP32 R1 -3  ;; Relative Address",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::JMP), 0b00010001][..],
+                &(-3i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "JMP32 @R1(-300, -300)  ;; Absolute Address",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::JMP), 0b00001001][..],
+                &(2954019116u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "JMP32 @R1(-300, -300)  ;; Relative Address",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::JMP), 0b00011001][..],
+                &(2954019116u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "JMP64 1000  ;; Absolute Address",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::JMP), 0b00000001][..],
+                &(1000u64).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "JMP64 1000  ;; Relative Address",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::JMP), 0b00010001][..],
+                &(1000u64).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIbw R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVI), 0b00000001][..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIww R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVI), 0b00010001][..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIdw R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVI), 0b00100001][..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIqw R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVI), 0b00110001][..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIbd R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVI), 0b00000001][..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIwd R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVI), 0b00010001][..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIdd R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVI), 0b00100001][..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIqd R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVI), 0b00110001][..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIbq R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVI), 0b00000001][..],
+                &(1000u64).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIwq R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVI), 0b00010001][..],
+                &(1000u64).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIdq R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVI), 0b00100001][..],
+                &(1000u64).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVIqq R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVI), 0b00110001][..],
+                &(1000u64).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32weq R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::CMPIeq), 0b00000001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64weq R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::CMPIeq), 0b00000001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32wlte R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::CMPIlte), 0b00000001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64wlte R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::CMPIlte), 0b00000001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32wgte R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::CMPIgte), 0b00000001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64wgte R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::CMPIgte), 0b00000001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32wulte R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::CMPIulte), 0b00000001][..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64wulte R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::CMPIulte), 0b00000001][..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32wugte R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::CMPIugte), 0b00000001][..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64wugte R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::CMPIugte), 0b00000001][..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32deq R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPIeq), 0b00000001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64deq R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPIeq), 0b00000001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32dlte R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPIlte), 0b00000001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64dlte R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPIlte), 0b00000001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32dgte R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPIgte), 0b00000001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64dgte R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPIgte), 0b00000001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32dulte R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPIulte), 0b00000001][..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64dulte R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPIulte), 0b00000001][..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32dugte R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPIugte), 0b00000001][..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64dugte R1, 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPIugte), 0b00000001][..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32weq @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::CMPIeq), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64weq @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::CMPIeq), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32wlte @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::CMPIlte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64wlte @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::CMPIlte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32wgte @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::CMPIgte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64wgte @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::CMPIgte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32wulte @R1(-3, -3), 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::CMPIulte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64wulte @R1(-3, -3), 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::CMPIulte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32wugte @R1(-3, -3), 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 0, OpCode::CMPIugte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64wugte @R1(-3, -3), 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::CMPIugte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(1000u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32deq @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPIeq), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64deq @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPIeq), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32dlte @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPIlte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64dlte @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPIlte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32dgte @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPIgte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64dgte @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPIgte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32dulte @R1(-3, -3), 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPIulte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64dulte @R1(-3, -3), 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPIulte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI32dugte @R1(-3, -3), 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::CMPIugte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "CMPI64dugte @R1(-3, -3), 1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::CMPIugte), 0b00011001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(1000u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVInw R1, (-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVIn), 0b00000001][..],
+                &(36879u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVInd R1, (-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVIn), 0b00000001][..],
+                &(2954019116u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVInq R1, (-30000, -30000)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVIn), 0b00000001][..],
+                &(11529215048034579760u64).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVInw @R1(-3, -3), (-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVIn), 0b01001001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(36879u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVInd @R1(-3, -3), (-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVIn), 0b01001001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(2954019116u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVInq @R1(-3, -3), (-30000, -30000)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVIn), 0b01001001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(11529215048034579760u64).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVRELw R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVREL), 0b00000001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVRELd R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVREL), 0b00000001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVRELq R1, -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVREL), 0b00000001][..],
+                &(-1000i64).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVRELw @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVREL), 0b01001001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVRELd @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 0, OpCode::MOVREL), 0b01001001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVRELq @R1(-3, -3), -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVREL), 0b01001001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i64).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVnw R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVnw), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVnd R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVnd), 0b00100001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVnw @R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVnw), 0b00101001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVnd @R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVnd), 0b00101001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVnw @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVnw), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVnd @R1, @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVnd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVnw @R1(-3, -3), R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVnw), 0b00101001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVnd @R1(-300, -300), R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVnd), 0b00101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVnw @R1(-3, -3), @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVnw), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(36879u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVnd @R1(-300, -300), @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVnd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+                &(2954019116u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVsnw R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVsnw), 0b00100001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVsnd R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVsnd), 0b00100001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVsnw @R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVsnw), 0b00101001][..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVsnd @R1, R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVsnd), 0b00101001][..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVsnw @R1, @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVsnw), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVsnd @R1, @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(0, 1, OpCode::MOVsnd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVsnw @R1(-3, -3), R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVsnw), 0b00101001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(-1000i16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVsnd @R1(-300, -300), R2 -1000",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVsnd), 0b00101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+                &(-1000i32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVsnw @R1(-3, -3), @R2(-3, -3)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVsnw), 0b10101001][..],
+                &(36879u16).to_le_bytes()[..],
+                &(36879u16).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    assert_eq!(
+        "MOVsnd @R1(-300, -300), @R2(-300, -300)",
+        dis(
+            opts,
+            cur,
+            &[
+                &[byte(1, 1, OpCode::MOVsnd), 0b10101001][..],
+                &(2954019116u32).to_le_bytes()[..],
+                &(2954019116u32).to_le_bytes()[..],
+
+            ].concat()
+        )
+    );
+
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 }
