@@ -12,11 +12,11 @@ pub struct Theme
     // (Foreground, Background, Style)
     pub opcode: Color,  // (Option<Color>, Option<Color>, Option<Style>),
     pub error: Color,
+    // pub bytecode: Color,
     // pub operand: Color,
     // pub index: Color,
     // pub immediate: Color,
     // pub comment: Color,
-    // pub bytecode: Color,
 }
 
 pub const fn color(r: u8, g: u8, b: u8) -> Color

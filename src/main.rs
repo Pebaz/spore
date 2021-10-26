@@ -94,6 +94,7 @@ fn main()
     let options = Options
     {
         theme: Some(SPORE_THEME),
+        bytecode: true,
     };
 
     for bytecode_file in std::env::args().skip(1).take(1)

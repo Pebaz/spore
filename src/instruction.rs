@@ -23,14 +23,15 @@ pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
     options: &Options,
     _bytes: &mut T,
+    byte0: u8,
     _byte0_bits: [bool; 8],
     op: OpCode,
 ) -> Result<(), String>
-// ! ) -> Result<(), String>
 {
+    let bytecode = [byte0];
     disassemble_instruction(
         writer,
-        // format!("{}", op).truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", op), options),
         None,
         None,
@@ -46,6 +47,7 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
+    byte0: u8,
     byte0_bits: [bool; 8],
     op: OpCode,
 ) -> Result<(), String>
@@ -87,9 +89,10 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
         _ => unreachable!(),
     };
 
+    let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
-        // name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         None,
         Some(arg1),
@@ -105,6 +108,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
+    byte0: u8,
     byte0_bits: [bool; 8],
     op: OpCode,
 ) -> Result<(), String>
@@ -307,9 +311,10 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
 
     name += &postfix;
 
+    let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
-        // format!("{}", name).truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         op1,
         arg1,
@@ -325,6 +330,7 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
+    byte0: u8,
     _byte0_bits: [bool; 8],
     op: OpCode,
 ) -> Result<(), String>
@@ -351,9 +357,10 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
         _ => unreachable!(),
     };
 
+    let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
-        // name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         Some(op1),
         None,
@@ -365,10 +372,12 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
     Ok(())
 }
 
+// TODO(pbz): There is a lot of duplicated code here. Consolidate it.
 pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
+    byte0: u8,
     byte0_bits: [bool; 8],
     op: OpCode,
 ) -> Result<(), String>
@@ -735,9 +744,10 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
         _ => unreachable!(),
     };
 
+    let bytecode = [byte0];
     disassemble_instruction(
         writer,
-        // name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         op1,
         arg1,
@@ -753,6 +763,7 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
+    byte0: u8,
     byte0_bits: [bool; 8],
     op: OpCode,
 ) -> Result<(), String>
@@ -792,9 +803,10 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
         }
     };
 
+    let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
-        // name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         Some(
             Operand::new_general_purpose(operand1_value, operand1_is_indirect)
@@ -814,6 +826,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
+    byte0: u8,
     byte0_bits: [bool; 8],
     op: OpCode,
 ) -> Result<(), String>
@@ -1120,9 +1133,10 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
         }
     };
 
+    let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
-        // name.truecolor(BLUE.0, BLUE.1, BLUE.2).to_string(),
+        if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         op1,
         arg1,
@@ -1140,6 +1154,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
 // TODO(pbz): Justify in columns maybe?
 pub fn disassemble_instruction<W: std::io::Write>(
     writer: &mut W,
+    bytecode: Option<&[u8]>,
     instruction: String,  // Must concatenate postfixes manually
     operand1: Option<Operand>,
     argument1: Option<Argument>,
@@ -1148,6 +1163,24 @@ pub fn disassemble_instruction<W: std::io::Write>(
     comment: Option<String>,
 )
 {
+    // TODO(pbz): Rework this, bytecode color theme is hard to access
+    if let Some(bytes) = bytecode
+    {
+        const TWO_CHARS_AND_A_SPACE: usize = 3;
+        let mut bytecode_output = String::with_capacity(
+            bytes.len() * TWO_CHARS_AND_A_SPACE
+        );
+
+        for byte in bytes.iter()
+        {
+            bytecode_output += format!("{:<02X?} ", byte).as_str();
+        }
+
+        write!(writer, "{:>10} ", bytecode_output).unwrap();
+    }
+
+    // write!(writer, "    ").unwrap();
+
     write!(writer, "{}", instruction).unwrap();
 
     if let Some(op1) = operand1

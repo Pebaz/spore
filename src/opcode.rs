@@ -241,14 +241,28 @@ impl OpCode
             // 1. INSTRUCTION (RET)
             OpCode::RET =>
             {
-                parse_instruction1(writer, options, bytes, byte0_bits, op)
+                parse_instruction1(
+                    writer,
+                    options,
+                    bytes,
+                    byte0,
+                    byte0_bits,
+                    op
+                )
             }
 
             OpCode::JMP8
             | OpCode::BREAK =>
             {
                 // 2. INSTRUCTION ARGUMENT (BREAK)
-                parse_instruction2(writer, options, bytes, byte0_bits, op)
+                parse_instruction2(
+                    writer,
+                    options,
+                    bytes,
+                    byte0,
+                    byte0_bits,
+                    op
+                )
             }
 
             OpCode::CALL
@@ -259,14 +273,28 @@ impl OpCode
             | OpCode::POPn =>
             {
                 // 3. INSTRUCTION OP1 ARGUMENT (CALL)
-                parse_instruction3(writer, options, bytes, byte0_bits, op)
+                parse_instruction3(
+                    writer,
+                    options,
+                    bytes,
+                    byte0,
+                    byte0_bits,
+                    op
+                )
             }
 
             OpCode::LOADSP
             | OpCode::STORESP =>
             {
                 // 4. INSTRUCTION OP1, OP2 (STORESP)
-                parse_instruction4(writer, options, bytes, byte0_bits, op)
+                parse_instruction4(
+                    writer,
+                    options,
+                    bytes,
+                    byte0,
+                    byte0_bits,
+                    op
+                )
             }
 
             OpCode::CMPIeq
@@ -279,7 +307,14 @@ impl OpCode
             | OpCode::MOVREL =>
             {
                 // 5. INSTRUCTION OP1 ARGUMENT, ARGUMENT (CMPI)
-                parse_instruction5(writer, options, bytes, byte0_bits, op)
+                parse_instruction5(
+                    writer,
+                    options,
+                    bytes,
+                    byte0,
+                    byte0_bits,
+                    op
+                )
             }
 
             OpCode::ADD
@@ -309,7 +344,14 @@ impl OpCode
             {
                 // 6. INSTRUCTION OP1, OP2 ARGUMENT
                 // (16 bit optional index/immediate) (MUL)
-                parse_instruction6(writer, options, bytes, byte0_bits, op)
+                parse_instruction6(
+                    writer,
+                    options,
+                    bytes,
+                    byte0,
+                    byte0_bits,
+                    op
+                )
             }
 
             OpCode::MOVnw
@@ -327,7 +369,14 @@ impl OpCode
             | OpCode::MOVsnd =>
             {
                 // 7. INSTRUCTION OP1 ARGUMENT, OP2 ARGUMENT (MOV)
-                parse_instruction7(writer, options, bytes, byte0_bits, op)
+                parse_instruction7(
+                    writer,
+                    options,
+                    bytes,
+                    byte0,
+                    byte0_bits,
+                    op
+                )
             }
         }
     }

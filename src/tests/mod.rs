@@ -36,7 +36,7 @@ fn byte(bit8: u8, bit7: u8, op: OpCode) -> u8
 #[test]
 pub fn test_instruction_disassembly()
 {
-    let opts = &Options { theme: None };
+    let opts = &Options { theme: None, bytecode: false };
     let cur = &mut Cursor::new(Vec::with_capacity(50));
 
     assert_eq!("RET", dis(opts, cur, &[OpCode::RET.to()]));
