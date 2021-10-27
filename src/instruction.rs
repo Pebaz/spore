@@ -33,7 +33,7 @@ pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item=u8>>(
     disassemble_instruction(
         writer,
         options,
-        if options.bytecode { Some(&bytecode) } else { None },
+        &bytecode,
         color_opcode(op.emit(options), options),
         None,
         None,
@@ -95,7 +95,7 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
     disassemble_instruction(
         writer,
         options,
-        if options.bytecode { Some(&bytecode) } else { None },
+        &bytecode,
         color_opcode(format!("{}", name), options),
         None,
         Some(arg1),
@@ -121,12 +121,13 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
     let immediate_data_present = byte0_bits[7];
     let is_64_bit = byte0_bits[6];  // Not used by PUSHn & POPn
 
-    // TODO(pbz): Oof, how to get bytes from read_value()?
-    let mut bytecode = ArrayVec::<_, 10>::new();
-    bytecode.push(byte0);
-
     let byte1 = bytes.next().expect("Unexpected end of bytes");
     let byte1_bits = bits_rev(byte1);
+
+    // TODO(pbz): Make sure to only allocate max bytes needed
+    let mut bytecode = ArrayVec::<_, 18>::new();
+    bytecode.push(byte0);
+    bytecode.push(byte1);
 
     match op
     {
@@ -173,6 +174,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
                 postfix += "a";  // CALL64 is always an absolute address
 
                 let value = read_value::<T, 8>(bytes)?;
+                bytecode.extend(value.iter().cloned());
 
                 Some(Argument::ImmediateI64(i64::from_le_bytes(value)))
             }
@@ -183,6 +185,9 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
                 let arg = if immediate_data_present
                 {
                     let value = read_value::<T, 4>(bytes)?;
+
+
+                    bytecode.extend(value.iter().cloned());
 
                     if operand1_is_indirect
                     {
@@ -234,6 +239,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
             let arg1 = if is_64_bit
             {
                 let value = read_value::<T, 8>(bytes)?;
+                bytecode.extend(value.iter().cloned());
 
                 Some(Argument::ImmediateI64(i64::from_le_bytes(value)))
             }
@@ -242,6 +248,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
                 let arg = if immediate_data_present
                 {
                     let value = read_value::<T, 4>(bytes)?;
+                    bytecode.extend(value.iter().cloned());
 
                     if operand1_is_indirect
                     {
@@ -282,6 +289,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
             let arg1 = if immediate_data_present
             {
                 let value = read_value::<T, 2>(bytes)?;
+                bytecode.extend(value.iter().cloned());
 
                 let arg = if operand1_is_indirect
                 {
@@ -318,11 +326,10 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
 
     name += &postfix;
 
-    let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
         options,
-        if options.bytecode { Some(&bytecode) } else { None },
+        &bytecode,
         color_opcode(format!("{}", name), options),
         op1,
         arg1,
@@ -350,6 +357,10 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
     let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
     let operand2_value = bits_to_byte_rev(&byte1_bits[4 ..= 6]);
 
+    let mut bytecode = ArrayVec::<_, 18>::new();
+    bytecode.push(byte0);
+    bytecode.push(byte1);
+
     let (op1, op2) = match op
     {
         OpCode::STORESP => (
@@ -365,11 +376,10 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
         _ => unreachable!(),
     };
 
-    let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
         options,
-        if options.bytecode { Some(&bytecode) } else { None },
+        &bytecode,
         color_opcode(format!("{}", name), options),
         Some(op1),
         None,
@@ -393,14 +403,17 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
 {
     let mut name = op.emit(options);
     let mut postfixes = String::with_capacity(7);
+    let byte1 = bytes.next().ok_or("Unexpected end of byte stream")?;
+    let byte1_bits = bits_rev(byte1);
+
+    let mut bytecode = ArrayVec::<_, 18>::new();
+    bytecode.push(byte0);
+    bytecode.push(byte1);
 
     let (op1, arg1, arg2) = match op
     {
         OpCode::MOVI =>
         {
-            let byte1 = bytes.next().expect("Unexpected end of bytes");
-            let byte1_bits = bits_rev(byte1);
-
             let move_width = bits_to_byte_rev(&byte1_bits[4 ..= 5]);
             postfixes += match move_width
             {
@@ -434,6 +447,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let arg1 = if operand1_index_present
             {
                 let value = read_value::<T, 2>(bytes)?;
+                bytecode.extend(value.iter().cloned());
 
                 let arg = if operand1_is_indirect
                 {
@@ -462,6 +476,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                     1 =>  // 16 bit
                     {
                         let value = read_value::<T, 2>(bytes)?;
+                        bytecode.extend(value.iter().cloned());
 
                         Some(Argument::ImmediateI16(i16::from_le_bytes(value)))
                     }
@@ -469,6 +484,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                     2 =>  // 32 bit
                     {
                         let value = read_value::<T, 4>(bytes)?;
+                        bytecode.extend(value.iter().cloned());
 
                         Some(Argument::ImmediateI32(i32::from_le_bytes(value)))
                     }
@@ -476,6 +492,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                     3 =>  // 64 bit
                     {
                         let value = read_value::<T, 8>(bytes)?;
+                        bytecode.extend(value.iter().cloned());
 
                         Some(Argument::ImmediateI64(i64::from_le_bytes(value)))
                     }
@@ -512,8 +529,6 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 _ => unreachable!(),
             };
 
-            let byte1 = bytes.next().expect("Unexpected end of bytes");
-            let byte1_bits = bits_rev(byte1);
             let operand1_index_present = byte1_bits[4];
             let operand1_is_indirect = byte1_bits[3];
             let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
@@ -528,6 +543,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let arg1 = if operand1_index_present
             {
                 let value = read_value::<T, 2>(bytes)?;
+                bytecode.extend(value.iter().cloned());
 
                 let arg = if operand1_is_indirect
                 {
@@ -554,6 +570,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 if immediate_data_is_32_bit
                 {
                     let value = read_value::<T, 4>(bytes)?;
+                    bytecode.extend(value.iter().cloned());
 
                     match op
                     {
@@ -569,6 +586,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 else
                 {
                     let value = read_value::<T, 2>(bytes)?;
+                    bytecode.extend(value.iter().cloned());
 
                     match op
                     {
@@ -597,8 +615,6 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 _ => unreachable!(),
             };
 
-            let byte1 = bytes.next().expect("Unexpected end of bytes");
-            let byte1_bits = bits_rev(byte1);
             let operand1_index_present = byte1_bits[6];
             let operand1_is_indirect = byte1_bits[3];
             let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
@@ -613,6 +629,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let arg1 = if operand1_index_present
             {
                 let value = read_value::<T, 2>(bytes)?;
+                bytecode.extend(value.iter().cloned());
 
                 let arg = if operand1_is_indirect
                 {
@@ -641,6 +658,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                     1 =>  // 16 bit
                     {
                         let value = read_value::<T, 2>(bytes)?;
+                        bytecode.extend(value.iter().cloned());
 
                         Some(Argument::Index16(u16::from_le_bytes(value)))
                     }
@@ -648,6 +666,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                     2 =>  // 32 bit
                     {
                         let value = read_value::<T, 4>(bytes)?;
+                        bytecode.extend(value.iter().cloned());
 
                         Some(Argument::Index32(u32::from_le_bytes(value)))
                     }
@@ -655,6 +674,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                     3 =>  // 64 bit
                     {
                         let value = read_value::<T, 8>(bytes)?;
+                        bytecode.extend(value.iter().cloned());
 
                         Some(Argument::Index64(u64::from_le_bytes(value)))
                     }
@@ -679,8 +699,6 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 _ => unreachable!(),
             };
 
-            let byte1 = bytes.next().expect("Unexpected end of bytes");
-            let byte1_bits = bits_rev(byte1);
             let operand1_index_present = byte1_bits[6];
             let operand1_is_indirect = byte1_bits[3];
             let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
@@ -695,6 +713,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let arg1 = if operand1_index_present
             {
                 let value = read_value::<T, 2>(bytes)?;
+                bytecode.extend(value.iter().cloned());
 
                 let arg = if operand1_is_indirect
                 {
@@ -723,6 +742,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                     1 =>  // 16 bit
                     {
                         let value = read_value::<T, 2>(bytes)?;
+                        bytecode.extend(value.iter().cloned());
 
                         Some(Argument::ImmediateI16(i16::from_le_bytes(value)))
                     }
@@ -730,6 +750,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                     2 =>  // 32 bit
                     {
                         let value = read_value::<T, 4>(bytes)?;
+                        bytecode.extend(value.iter().cloned());
 
                         Some(Argument::ImmediateI32(i32::from_le_bytes(value)))
                     }
@@ -737,6 +758,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                     3 =>  // 64 bit
                     {
                         let value = read_value::<T, 8>(bytes)?;
+                        bytecode.extend(value.iter().cloned());
 
                         Some(Argument::ImmediateI64(i64::from_le_bytes(value)))
                     }
@@ -753,11 +775,10 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
         _ => unreachable!(),
     };
 
-    let bytecode = [byte0];
     disassemble_instruction(
         writer,
         options,
-        if options.bytecode { Some(&bytecode) } else { None },
+        &bytecode,
         color_opcode(format!("{}", name), options),
         op1,
         arg1,
@@ -790,11 +811,16 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
     let operand2_is_indirect = byte1_bits[7];
     let operand2_value = bits_to_byte_rev(&byte1_bits[4 ..= 6]);
 
+    let mut bytecode = ArrayVec::<_, 18>::new();
+    bytecode.push(byte0);
+    bytecode.push(byte1);
+
     let op1_x16_index_or_immediate =
     {
         if immediate_data_present
         {
             let value = read_value::<T, 2>(bytes)?;
+            bytecode.extend(value.iter().cloned());
 
             let arg = if operand2_is_indirect
             {
@@ -813,11 +839,10 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
         }
     };
 
-    let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
         options,
-        if options.bytecode { Some(&bytecode) } else { None },
+        &bytecode,
         color_opcode(format!("{}", name), options),
         Some(
             Operand::new_general_purpose(operand1_value, operand1_is_indirect)
@@ -861,6 +886,10 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
     let operand2_is_indirect = byte1_bits[7];
     let operand2_value = bits_to_byte_rev(&byte1_bits[4 ..= 6]);
 
+    let mut bytecode = ArrayVec::<_, 18>::new();
+    bytecode.push(byte0);
+    bytecode.push(byte1);
+
     let op1 = Some(
         Operand::new_general_purpose(
             operand1_value,
@@ -889,6 +918,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         OpCode::MOVsnw =>  // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             Argument::Index16(u16::from_le_bytes(value))
                         }
@@ -896,6 +926,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         OpCode::MOVsnd =>  // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             Argument::Index32(u32::from_le_bytes(value))
                         }
@@ -920,6 +951,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         OpCode::MOVsnw =>  // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             if operand2_is_indirect
                             {
@@ -936,6 +968,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         OpCode::MOVsnd =>  // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             if operand2_is_indirect
                             {
@@ -976,6 +1009,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         OpCode::MOVnw =>  // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             Argument::Index16(u16::from_le_bytes(value))
                         }
@@ -983,6 +1017,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         OpCode::MOVnd =>  // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             Argument::Index32(u32::from_le_bytes(value))
                         }
@@ -1007,6 +1042,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         OpCode::MOVnw =>  // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             if operand2_is_indirect
                             {
@@ -1023,6 +1059,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         OpCode::MOVnd =>  // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             if operand2_is_indirect
                             {
@@ -1064,6 +1101,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         | OpCode::MOVqw =>  // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             Argument::Index16(u16::from_le_bytes(value))
                         }
@@ -1074,6 +1112,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         | OpCode::MOVqd =>  // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             Argument::Index32(u32::from_le_bytes(value))
                         }
@@ -1081,6 +1120,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         OpCode::MOVqq =>  // 64 bit
                         {
                             let value = read_value::<T, 8>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             Argument::Index64(u64::from_le_bytes(value))
                         }
@@ -1108,6 +1148,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         | OpCode::MOVqw =>  // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             Argument::Index16(u16::from_le_bytes(value))
                         }
@@ -1118,6 +1159,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         | OpCode::MOVqd =>  // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             Argument::Index32(u32::from_le_bytes(value))
                         }
@@ -1125,6 +1167,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                         OpCode::MOVqq =>  // 64 bit
                         {
                             let value = read_value::<T, 8>(bytes)?;
+                            bytecode.extend(value.iter().cloned());
 
                             Argument::Index64(u64::from_le_bytes(value))
                         }
@@ -1144,11 +1187,10 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
         }
     };
 
-    let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
         options,
-        if options.bytecode { Some(&bytecode) } else { None },
+        &bytecode,
         color_opcode(format!("{}", name), options),
         op1,
         arg1,
@@ -1167,7 +1209,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
 pub fn disassemble_instruction<W: std::io::Write>(
     writer: &mut W,
     options: &Options,
-    bytecode: Option<&[u8]>,
+    bytecode: &[u8],
     instruction: String,  // Must concatenate postfixes manually
     operand1: Option<Operand>,
     argument1: Option<Argument>,
@@ -1176,20 +1218,19 @@ pub fn disassemble_instruction<W: std::io::Write>(
     comment: Option<String>,
 )
 {
-    // TODO(pbz): Rework this, bytecode color theme is hard to access
-    if let Some(bytes) = bytecode
+    if options.bytecode
     {
         const TWO_CHARS_AND_A_SPACE: usize = 3;
         let mut bytecode_output = String::with_capacity(
-            bytes.len() * TWO_CHARS_AND_A_SPACE
+            bytecode.len() * TWO_CHARS_AND_A_SPACE
         );
 
-        for byte in bytes.iter()
+        for byte in bytecode.iter()
         {
             bytecode_output += format!("{:<02X?} ", byte).as_str();
         }
 
-        write!(writer, "{:>10} ", bytecode_output).unwrap();
+        write!(writer, "{:>54} ", bytecode_output).unwrap();
     }
 
     // write!(writer, "    ").unwrap();
