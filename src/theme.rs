@@ -3,18 +3,22 @@ use crate::options::Options;
 
 pub const SPORE_THEME: Theme = Theme
 {
-    opcode: color(98, 168, 209),
-    error: color(255, 0, 55),
-    bytecode: color(100, 100, 100),
-    indirect: color(255, 0, 255),
-    operand: color(255, 0, 255),
-    index: color(255, 0, 255),
-    immediate: color(255, 0, 255),
+    opcode: color(217, 207, 199),  // White
+    error: color(207, 66, 31),  // Red
+    bytecode: color(84, 71, 52),  // Brown
+    indirect: color(227, 202, 113),  // Light yellow
+    operand: color(135, 75, 41),  // Dark Orange
+    index: color(217, 182, 130),  // Dark tan
+    immediate: color(191, 151, 169),  // Light Purple
     comment: color(255, 0, 255),
-    x8: color(255, 0, 255),
-    x16: color(255, 0, 255),
-    x32: color(255, 0, 255),
-    x64: color(255, 0, 255),
+    x8: color(173, 152, 169),  // Purple
+    x16: color(221, 217, 159),  // Yellow
+    x32: color(168, 132, 88),  // Tan
+    x64: color(125, 95, 102),  // Red
+    // x8: color(0, 155, 255),  // Bright blue
+    // x16: color(255, 200, 0),  // Bright yellow
+    // x32: color(155, 255, 0),  // Bright green
+    // x64: color(255, 0, 55),  // Bright red
 };
 
 // TODO(pbz): Gravity Falls McGucket theme like that old computer!
