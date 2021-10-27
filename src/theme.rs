@@ -7,6 +7,9 @@ pub const SPORE_THEME: Theme = Theme
     error: color(255, 0, 55),
 };
 
+// TODO(pbz): Gravity Falls McGucket theme like that old computer!
+// TODO(pbz): Matterhorn Village Theme
+
 pub struct Theme
 {
     // (Foreground, Background, Style)
@@ -36,6 +39,9 @@ pub fn colored_string(string: String, color: Color) -> String
     }
 }
 
+
+// TODO(pbz): Perhaps no more need for this once Options are passed directly to
+// TODO(pbz): .color() methods on each type.
 pub fn color_opcode(string: String, options: &Options) -> String
 {
     if let Some(color_theme) = &options.theme
@@ -58,4 +64,10 @@ pub fn color_error(string: String, options: &Options) -> String
     {
         string
     }
+}
+
+pub trait Emit
+{
+    // TODO(pbz): emit(string_buffer: &mut ArrayString, ...)
+    fn emit(&self, options: &Options) -> String;
 }

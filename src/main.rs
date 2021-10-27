@@ -93,6 +93,7 @@ fn main()
     let mut show_help = true;
     let options = Options
     {
+        pad_output: true,
         theme: Some(SPORE_THEME),
         bytecode: true,
     };

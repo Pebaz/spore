@@ -1,3 +1,5 @@
+use crate::options::Options;
+use crate::theme::Emit;
 
 pub enum Operand
 {
@@ -39,9 +41,9 @@ impl Operand
     }
 }
 
-impl std::fmt::Display for Operand
+impl Emit for Operand
 {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result
+    fn emit(&self, options: &Options) -> String
     {
         match self
         {
@@ -49,8 +51,7 @@ impl std::fmt::Display for Operand
             {
                 assert!((0u8 ..= 7u8).contains(&index));
 
-                write!(
-                    f,
+                format!(
                     "{}R{}",
                     if *at { "@" } else { "" },
                     index
@@ -63,12 +64,12 @@ impl std::fmt::Display for Operand
 
                 if *index == 0
                 {
-                    write!(f, "{}FLAGS", if *at { "@" } else { "" })
+                    format!("{}FLAGS", if *at { "@" } else { "" })
                 }
 
                 else
                 {
-                    write!(f, "{}IP", if *at { "@" } else { "" })
+                    format!("{}IP", if *at { "@" } else { "" })
                 }
             }
         }

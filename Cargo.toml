@@ -6,3 +6,4 @@ license = "Zlib"
 
 [dependencies]
 colored = "*"
+arrayvec = "*"

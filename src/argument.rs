@@ -1,4 +1,6 @@
-use crate::natural_index::*;
+use crate::natural_index::NaturalIndex;
+use crate::options::Options;
+use crate::theme::Emit;
 
 pub enum Argument
 {
@@ -13,9 +15,9 @@ pub enum Argument
     ImmediateI64(i64),
 }
 
-impl std::fmt::Display for Argument
+impl Emit for Argument
 {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result
+    fn emit(&self, options: &Options) -> String
     {
         match self
         {
@@ -23,34 +25,34 @@ impl std::fmt::Display for Argument
             {
                 let natural_index = NaturalIndex::from_u16(*index);
 
-                write!(f, "{}", natural_index)
+                format!("{}", natural_index.emit(options))
             }
 
             Self::Index32(index) =>
             {
                 let natural_index = NaturalIndex::from_u32(*index);
 
-                write!(f, "{}", natural_index)
+                format!("{}", natural_index.emit(options))
             }
 
             Self::Index64(index) =>
             {
                 let natural_index = NaturalIndex::from_u64(*index);
 
-                write!(f, "{}", natural_index)
+                format!("{}", natural_index.emit(options))
             }
 
-            Self::ImmediateU16(immediate) => write!(f, "{}", immediate),
+            Self::ImmediateU16(immediate) => format!("{}", immediate),
 
-            Self::ImmediateU32(immediate) => write!(f, "{}", immediate),
+            Self::ImmediateU32(immediate) => format!("{}", immediate),
 
-            // Self::ImmediateU64(immediate) => write!(f, "{}", immediate),
+            // Self::ImmediateU64(immediate) => format!("{}", immediate),
 
-            Self::ImmediateI16(immediate) => write!(f, "{}", immediate),
+            Self::ImmediateI16(immediate) => format!("{}", immediate),
 
-            Self::ImmediateI32(immediate) => write!(f, "{}", immediate),
+            Self::ImmediateI32(immediate) => format!("{}", immediate),
 
-            Self::ImmediateI64(immediate) => write!(f, "{}", immediate),
+            Self::ImmediateI64(immediate) => format!("{}", immediate),
         }
     }
 }

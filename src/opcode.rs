@@ -1,6 +1,8 @@
 use crate::instruction::*;
 use crate::options::Options;
 use crate::bits::*;
+use crate::theme::Emit;
+
 
 #[derive(Debug)]
 pub enum OpCode
@@ -200,15 +202,6 @@ impl std::convert::TryFrom<u8> for OpCode
     }
 }
 
-/// Needed since stringifying the OpCode is part of application functionality.
-impl std::fmt::Display for OpCode
-{
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result
-    {
-        write!(f, "{:?}", self)
-    }
-}
-
 impl OpCode
 {
     /// Bytes are read from left to right. Bits are read from right to left.
@@ -384,5 +377,13 @@ impl OpCode
     pub fn to(self) -> u8
     {
         self.try_into().unwrap()
+    }
+}
+
+impl Emit for OpCode
+{
+    fn emit(&self, options: &Options) -> String
+    {
+        format!("{:?}", self)
     }
 }

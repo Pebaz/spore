@@ -1,3 +1,5 @@
+use crate::options::Options;
+use crate::theme::Emit;
 use crate::bits::*;
 
 const SIZE_OF_VOID_PTR: u16 = 8;
@@ -103,12 +105,11 @@ impl NaturalIndex
     }
 }
 
-impl std::fmt::Display for NaturalIndex
+impl Emit for NaturalIndex
 {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result
+    fn emit(&self, options: &Options) -> String
     {
-        write!(
-            f,
+        format!(
             "({}{}, {}{})",
             if self.sign < 0 { "-" } else { "+" },
             self.natural,

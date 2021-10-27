@@ -1,3 +1,4 @@
+use arrayvec::ArrayVec;
 use crate::opcode::*;
 use crate::operand::*;
 use crate::argument::*;
@@ -31,8 +32,9 @@ pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item=u8>>(
     let bytecode = [byte0];
     disassemble_instruction(
         writer,
+        options,
         if options.bytecode { Some(&bytecode) } else { None },
-        color_opcode(format!("{}", op), options),
+        color_opcode(op.emit(options), options),
         None,
         None,
         None,
@@ -52,7 +54,7 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
     op: OpCode,
 ) -> Result<(), String>
 {
-    let mut name = format!("{}", op);
+    let mut name = op.emit(options);
 
     let byte1 = bytes.next().expect("Unexpected end of bytes");
 
@@ -92,6 +94,7 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
     let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
+        options,
         if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         None,
@@ -113,10 +116,14 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
     op: OpCode,
 ) -> Result<(), String>
 {
-    let mut name = format!("{}", op);
+    let mut name = op.emit(options);
     let mut postfix = String::with_capacity(5);
     let immediate_data_present = byte0_bits[7];
     let is_64_bit = byte0_bits[6];  // Not used by PUSHn & POPn
+
+    // TODO(pbz): Oof, how to get bytes from read_value()?
+    let mut bytecode = ArrayVec::<_, 10>::new();
+    bytecode.push(byte0);
 
     let byte1 = bytes.next().expect("Unexpected end of bytes");
     let byte1_bits = bits_rev(byte1);
@@ -314,6 +321,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
     let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
+        options,
         if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         op1,
@@ -335,7 +343,7 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
     op: OpCode,
 ) -> Result<(), String>
 {
-    let name = format!("{}", op);
+    let name = op.emit(options);
 
     let byte1 = bytes.next().expect("Unexpected end of bytes");
     let byte1_bits = bits_rev(byte1);
@@ -360,6 +368,7 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
     let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
+        options,
         if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         Some(op1),
@@ -382,7 +391,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
     op: OpCode,
 ) -> Result<(), String>
 {
-    let mut name = format!("{}", op);
+    let mut name = op.emit(options);
     let mut postfixes = String::with_capacity(7);
 
     let (op1, arg1, arg2) = match op
@@ -434,7 +443,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 {
                     let msg = format!(
                         "Immediate data not supported for {}",
-                        op
+                        op.emit(options)
                     );
 
                     return Err(color_error(msg, options));
@@ -528,7 +537,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 {
                     let msg = format!(
                         "Immediate data not supported for {}",
-                        op
+                        op.emit(options)
                     );
 
                     return Err(color_error(msg, options));
@@ -613,7 +622,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 {
                     let msg = format!(
                         "Immediate data not supported for {}",
-                        op
+                        op.emit(options)
                     );
 
                     return Err(color_error(msg, options));
@@ -695,7 +704,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 {
                     let msg = format!(
                         "Immediate data not supported for {}",
-                        op
+                        op.emit(options)
                     );
 
                     return Err(color_error(msg, options));
@@ -747,6 +756,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
     let bytecode = [byte0];
     disassemble_instruction(
         writer,
+        options,
         if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         op1,
@@ -768,7 +778,7 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
     op: OpCode,
 ) -> Result<(), String>
 {
-    let mut name = format!("{}", op);
+    let mut name = op.emit(options);
     let immediate_data_present = byte0_bits[7];
 
     name += if byte0_bits[6] { "64" } else { "32" };
@@ -806,6 +816,7 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
     let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
+        options,
         if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         Some(
@@ -831,7 +842,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
     op: OpCode,
 ) -> Result<(), String>
 {
-    let mut name = format!("{}", op);
+    let mut name = op.emit(options);
     let operand1_index_present = byte0_bits[7];
     let operand2_index_present = byte0_bits[6];
 
@@ -1136,6 +1147,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
     let bytecode = [byte0, byte1];
     disassemble_instruction(
         writer,
+        options,
         if options.bytecode { Some(&bytecode) } else { None },
         color_opcode(format!("{}", name), options),
         op1,
@@ -1154,6 +1166,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
 // TODO(pbz): Justify in columns maybe?
 pub fn disassemble_instruction<W: std::io::Write>(
     writer: &mut W,
+    options: &Options,
     bytecode: Option<&[u8]>,
     instruction: String,  // Must concatenate postfixes manually
     operand1: Option<Operand>,
@@ -1181,21 +1194,31 @@ pub fn disassemble_instruction<W: std::io::Write>(
 
     // write!(writer, "    ").unwrap();
 
-    write!(writer, "{}", instruction).unwrap();
+    // TODO(pbz): Longest instruction is 9
+    if options.pad_output
+    {
+        write!(writer, "{:<32}", instruction).unwrap();
+    }
+    else
+    {
+        write!(writer, "{}", instruction).unwrap();
+    }
 
     if let Some(op1) = operand1
     {
-        write!(writer, " {}", op1).unwrap();
+        write!(writer, " {}", op1.emit(options)).unwrap();
     }
 
     if let Some(arg1) = argument1
     {
+        let text = arg1.emit(options);
+
         match arg1
         {
-            Argument::Index16(_index) => write!(writer, "{}", arg1).unwrap(),
-            Argument::Index32(_index) => write!(writer, "{}", arg1).unwrap(),
-            Argument::Index64(_index) => write!(writer, "{}", arg1).unwrap(),
-            _ => write!(writer, " {}", arg1).unwrap(),
+            Argument::Index16(_index) => write!(writer, "{}", text).unwrap(),
+            Argument::Index32(_index) => write!(writer, "{}", text).unwrap(),
+            Argument::Index64(_index) => write!(writer, "{}", text).unwrap(),
+            _ => write!(writer, " {}", text).unwrap(),
         }
     }
 
@@ -1206,7 +1229,7 @@ pub fn disassemble_instruction<W: std::io::Write>(
 
     if let Some(ref op2) = operand2
     {
-        write!(writer, " {}", op2).unwrap();
+        write!(writer, " {}", op2.emit(options)).unwrap();
     }
 
     if let Some(arg2) = argument2
@@ -1216,22 +1239,22 @@ pub fn disassemble_instruction<W: std::io::Write>(
             Argument::Index16(_index) =>
             {
                 if operand2.is_none() { write!(writer, " ").unwrap(); }
-                write!(writer, "{}", arg2).unwrap();
+                write!(writer, "{}", arg2.emit(options)).unwrap();
             }
 
             Argument::Index32(_index) =>
             {
                 if operand2.is_none() { write!(writer, " ").unwrap(); }
-                write!(writer, "{}", arg2).unwrap();
+                write!(writer, "{}", arg2.emit(options)).unwrap();
             }
 
             Argument::Index64(_index) =>
             {
                 if operand2.is_none() { write!(writer, " ").unwrap(); }
-                write!(writer, "{}", arg2).unwrap();
+                write!(writer, "{}", arg2.emit(options)).unwrap();
             }
 
-            _ => write!(writer, " {}", arg2).unwrap(),
+            _ => write!(writer, " {}", arg2.emit(options)).unwrap(),
         }
     }
 
