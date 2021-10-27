@@ -34,7 +34,7 @@ pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item=u8>>(
         writer,
         options,
         &bytecode,
-        color_opcode(op.emit(options), options),
+        op.emit(options),
         None,
         None,
         None,
@@ -96,7 +96,7 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
         writer,
         options,
         &bytecode,
-        color_opcode(format!("{}", name), options),
+        name,
         None,
         Some(arg1),
         None,
@@ -136,7 +136,14 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
         | OpCode::PUSH
         | OpCode::POP =>
         {
-            postfix += if is_64_bit { "64" } else { "32" };
+            postfix += &(if is_64_bit
+            {
+                color_x64(String::from("64"), options)
+            }
+            else
+            {
+                color_x32(String::from("32"), options)
+            });
         }
 
         _ => (),
@@ -330,7 +337,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
         writer,
         options,
         &bytecode,
-        color_opcode(format!("{}", name), options),
+        name,
         op1,
         arg1,
         op2,
@@ -380,7 +387,7 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
         writer,
         options,
         &bytecode,
-        color_opcode(format!("{}", name), options),
+        name,
         Some(op1),
         None,
         Some(op2),
@@ -415,14 +422,14 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
         OpCode::MOVI =>
         {
             let move_width = bits_to_byte_rev(&byte1_bits[4 ..= 5]);
-            postfixes += match move_width
+            postfixes += &(match move_width
             {
-                0 => "b",  // 8 bit
-                1 => "w",  // 16 bit
-                2 => "d",  // 32 bit
-                3 => "q",  // 64 bit
+                0 => color_x8(String::from("b"), options),
+                1 => color_x16(String::from("w"), options),
+                2 => color_x32(String::from("d"), options),
+                3 => color_x64(String::from("q"), options),
                 _ => unreachable!(),
-            };
+            });
 
             let immediate_data_width = bits_to_byte_rev(&byte0_bits[6 ..= 7]);
             postfixes += match immediate_data_width
@@ -517,7 +524,14 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
 
             // Have to obliterate name due to the reordering below:
             name = String::from("CMPI");
-            name += if comparison_is_64_bit { "64" } else { "32" };
+            name += &(if comparison_is_64_bit
+            {
+                color_x64(String::from("64"), options)
+            }
+            else
+            {
+                color_x32(String::from("32"), options)
+            });
             name += if immediate_data_is_32_bit { "d" } else { "w" };
             name += match op
             {
@@ -779,7 +793,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
         writer,
         options,
         &bytecode,
-        color_opcode(format!("{}", name), options),
+        name,
         op1,
         arg1,
         None,
@@ -801,8 +815,16 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
 {
     let mut name = op.emit(options);
     let immediate_data_present = byte0_bits[7];
+    let is_64_bit = byte0_bits[6];
 
-    name += if byte0_bits[6] { "64" } else { "32" };
+    name += &(if is_64_bit
+    {
+        color_x64(String::from("64"), options)
+    }
+    else
+    {
+        color_x32(String::from("32"), options)
+    });
 
     let byte1 = bytes.next().expect("Unexpected end of bytes");
     let byte1_bits = bits_rev(byte1);
@@ -843,7 +865,7 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
         writer,
         options,
         &bytecode,
-        color_opcode(format!("{}", name), options),
+        name,
         Some(
             Operand::new_general_purpose(operand1_value, operand1_is_indirect)
         ),
@@ -1191,7 +1213,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
         writer,
         options,
         &bytecode,
-        color_opcode(format!("{}", name), options),
+        name,
         op1,
         arg1,
         op2,

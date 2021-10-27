@@ -1,7 +1,7 @@
 use crate::instruction::*;
 use crate::options::Options;
 use crate::bits::*;
-use crate::theme::Emit;
+use crate::theme::*;
 
 
 #[derive(Debug)]
@@ -384,6 +384,6 @@ impl Emit for OpCode
 {
     fn emit(&self, options: &Options) -> String
     {
-        format!("{:?}", self)
+        color_opcode(format!("{:?}", self), options)
     }
 }
