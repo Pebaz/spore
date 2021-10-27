@@ -10,7 +10,7 @@ pub const SPORE_THEME: Theme = Theme
     operand: color(135, 75, 41),  // Dark Orange
     index: color(217, 182, 130),  // Dark tan
     immediate: color(191, 151, 169),  // Light Purple
-    comment: color(255, 0, 255),
+    comment: color(135, 107, 55),  // Brown
     x8: color(173, 152, 169),  // Purple
     x16: color(221, 217, 159),  // Yellow
     x32: color(168, 132, 88),  // Tan
