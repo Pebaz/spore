@@ -1299,7 +1299,30 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
             // If indices are present, keep them
             let index_width = if indices_present
             {
-                String::from(chars.next_back().unwrap())
+                let width = String::from(chars.next_back().unwrap());
+
+                match op
+                {
+                    OpCode::MOVbw
+                    | OpCode::MOVww
+                    | OpCode::MOVdw
+                    | OpCode::MOVqw =>
+                    {
+                        color_x16(width, options)
+                    }
+
+                    OpCode::MOVbd
+                    | OpCode::MOVwd
+                    | OpCode::MOVdd
+                    | OpCode::MOVqd =>
+                    {
+                        color_x32(width, options)
+                    }
+
+                    OpCode::MOVqq => color_x64(width, options),
+
+                    _ => unreachable!(),
+                }
             }
             else  // Remove it to get to the guaranteed move width
             {
@@ -1308,23 +1331,23 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
             };
 
             let move_width = String::from(chars.next_back().unwrap());
-            let suffix = move_width + &index_width;
-
-            match op
+            let move_width = match op
             {
-                OpCode::MOVbw | OpCode::MOVbd => color_x8(suffix, options),
+                OpCode::MOVbw | OpCode::MOVbd => color_x8(move_width, options),
 
-                OpCode::MOVww | OpCode::MOVwd => color_x16(suffix, options),
+                OpCode::MOVww | OpCode::MOVwd => color_x16(move_width, options),
 
-                OpCode::MOVdw | OpCode::MOVdd => color_x32(suffix, options),
+                OpCode::MOVdw | OpCode::MOVdd => color_x32(move_width, options),
 
                 OpCode::MOVqw | OpCode::MOVqd | OpCode::MOVqq =>
                 {
-                    color_x64(suffix, options)
+                    color_x64(move_width, options)
                 }
 
                 _ => unreachable!(),
-            }
+            };
+
+            move_width + &index_width
         }
 
         _ => unreachable!(),
