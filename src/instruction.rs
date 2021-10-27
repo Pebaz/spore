@@ -56,7 +56,7 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
 {
     let mut name = op.emit(options);
 
-    let byte1 = bytes.next().expect("Unexpected end of bytes");
+    let byte1 = bytes.next().ok_or("Unexpected end of bytes")?;
 
     let arg1 = match op
     {
@@ -81,8 +81,16 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
             if conditional
             {
                 let condition_bit_set = byte0_bits[6];
+                let postfix = if condition_bit_set
+                {
+                    color_opcode(String::from("cs"), options)
+                }
+                else
+                {
+                    color_opcode(String::from("cc"), options)
+                };
 
-                name += if condition_bit_set { "cs" } else { "cc" };
+                name += &postfix;
             }
 
             Argument::ImmediateI16((byte1 as i8) as i16)
@@ -121,7 +129,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
     let immediate_data_present = byte0_bits[7];
     let is_64_bit = byte0_bits[6];  // Not used by PUSHn & POPn
 
-    let byte1 = bytes.next().expect("Unexpected end of bytes");
+    let byte1 = bytes.next().ok_or("Unexpected end of bytes")?;
     let byte1_bits = bits_rev(byte1);
 
     // TODO(pbz): Make sure to only allocate max bytes needed
@@ -136,14 +144,16 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
         | OpCode::PUSH
         | OpCode::POP =>
         {
-            postfix += &(if is_64_bit
+            let width_postfix = if is_64_bit
             {
                 color_x64(String::from("64"), options)
             }
             else
             {
                 color_x32(String::from("32"), options)
-            });
+            };
+
+            postfix += &width_postfix;
         }
 
         _ => (),
@@ -359,7 +369,7 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
 {
     let name = op.emit(options);
 
-    let byte1 = bytes.next().expect("Unexpected end of bytes");
+    let byte1 = bytes.next().ok_or("Unexpected end of bytes")?;
     let byte1_bits = bits_rev(byte1);
     let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
     let operand2_value = bits_to_byte_rev(&byte1_bits[4 ..= 6]);
@@ -422,23 +432,27 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
         OpCode::MOVI =>
         {
             let move_width = bits_to_byte_rev(&byte1_bits[4 ..= 5]);
-            postfixes += &(match move_width
+            let postfix = match move_width
             {
                 0 => color_x8(String::from("b"), options),
                 1 => color_x16(String::from("w"), options),
                 2 => color_x32(String::from("d"), options),
                 3 => color_x64(String::from("q"), options),
                 _ => unreachable!(),
-            });
+            };
+
+            postfixes += &postfix;
 
             let immediate_data_width = bits_to_byte_rev(&byte0_bits[6 ..= 7]);
-            postfixes += match immediate_data_width
+            let postfix = match immediate_data_width
             {
-                1 => "w",  // 16 bit
-                2 => "d",  // 32 bit
-                3 => "q",  // 64 bit
+                1 => color_x16(String::from("w"), options),
+                2 => color_x32(String::from("d"), options),
+                3 => color_x64(String::from("q"), options),
                 _ => unreachable!(),
             };
+
+            postfixes += &postfix;
 
             let operand1_index_present = byte1_bits[6];
             let operand1_is_indirect = byte1_bits[3];
@@ -524,24 +538,48 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
 
             // Have to obliterate name due to the reordering below:
             name = String::from("CMPI");
-            name += &(if comparison_is_64_bit
+
+            let postfix = if comparison_is_64_bit
             {
                 color_x64(String::from("64"), options)
             }
             else
             {
                 color_x32(String::from("32"), options)
-            });
-            name += if immediate_data_is_32_bit { "d" } else { "w" };
-            name += match op
+            };
+
+            name += &postfix;
+
+            let postfix = if immediate_data_is_32_bit
             {
-                OpCode::CMPIeq => "eq",
-                OpCode::CMPIlte => "lte",
-                OpCode::CMPIgte => "gte",
-                OpCode::CMPIulte => "ulte",
-                OpCode::CMPIugte => "ugte",
+                color_x32(String::from("d"), options)
+            }
+            else
+            {
+                color_x16(String::from("w"), options)
+            };
+
+            name += &postfix;
+
+            let postfix = match op
+            {
+                OpCode::CMPIeq => color_opcode(String::from("eq"), options),
+                OpCode::CMPIlte => color_opcode(String::from("lte"), options),
+                OpCode::CMPIgte => color_opcode(String::from("gte"), options),
+                OpCode::CMPIulte =>
+                {
+                    color_opcode(String::from("ulte"), options)
+                }
+
+                OpCode::CMPIugte =>
+                {
+                    color_opcode(String::from("ugte"), options)
+                }
+
                 _ => unreachable!(),
             };
+
+            name += &postfix;
 
             let operand1_index_present = byte1_bits[4];
             let operand1_is_indirect = byte1_bits[3];
@@ -621,13 +659,15 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
         OpCode::MOVIn =>
         {
             let operand2_index_width = bits_to_byte_rev(&byte0_bits[6 ..= 7]);
-            postfixes += match operand2_index_width
+            let postfix = match operand2_index_width
             {
-                1 => "w",  // 16 bit
-                2 => "d",  // 32 bit
-                3 => "q",  // 64 bit
+                1 => color_x16(String::from("w"), options),
+                2 => color_x32(String::from("d"), options),
+                3 => color_x64(String::from("q"), options),
                 _ => unreachable!(),
             };
+
+            postfixes += &postfix;
 
             let operand1_index_present = byte1_bits[6];
             let operand1_is_indirect = byte1_bits[3];
@@ -705,13 +745,15 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
         OpCode::MOVREL =>
         {
             let immediate_data_width = bits_to_byte_rev(&byte0_bits[6 ..= 7]);
-            postfixes += match immediate_data_width
+            let postfix = match immediate_data_width
             {
-                1 => "w",  // 16 bit
-                2 => "d",  // 32 bit
-                3 => "q",  // 64 bit
+                1 => color_x16(String::from("w"), options),
+                2 => color_x32(String::from("d"), options),
+                3 => color_x64(String::from("q"), options),
                 _ => unreachable!(),
             };
+
+            postfixes += &postfix;
 
             let operand1_index_present = byte1_bits[6];
             let operand1_is_indirect = byte1_bits[3];
@@ -816,17 +858,18 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
     let mut name = op.emit(options);
     let immediate_data_present = byte0_bits[7];
     let is_64_bit = byte0_bits[6];
-
-    name += &(if is_64_bit
+    let postfix = if is_64_bit
     {
         color_x64(String::from("64"), options)
     }
     else
     {
         color_x32(String::from("32"), options)
-    });
+    };
 
-    let byte1 = bytes.next().expect("Unexpected end of bytes");
+    name += &postfix;
+
+    let byte1 = bytes.next().ok_or("Unexpected end of bytes")?;
     let byte1_bits = bits_rev(byte1);
     let operand1_is_indirect = byte1_bits[3];
     let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
@@ -889,19 +932,10 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
     op: OpCode,
 ) -> Result<(), String>
 {
-    let mut name = op.emit(options);
     let operand1_index_present = byte0_bits[7];
     let operand2_index_present = byte0_bits[6];
 
-    // TODO(pbz): Really need to color-code the bit widths (bwdq)
-
-    // Can't presume operands are indexed
-    if !(operand1_index_present || operand2_index_present)
-    {
-        name = name[.. name.len() - 1].to_string();
-    }
-
-    let byte1 = bytes.next().expect("Unexpected end of bytes");
+    let byte1 = bytes.next().ok_or("Unexpected end of bytes")?;
     let byte1_bits = bits_rev(byte1);
     let operand1_is_indirect = byte1_bits[3];
     let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
@@ -1209,6 +1243,145 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
         }
     };
 
+    /*
+    If there are no indirects, remove the last character.
+    Some instructions must have at least one character though.
+    If it is one of those, remove that one also.
+
+    MOVsn -> remove 1 if no indirects
+    MOV -> remove 1 if no indirects, remove 1 more to color move width
+
+    */
+
+    let mut name = format!("{:?}", op);
+    let mut chars = name.chars();
+
+    // Can't presume operands are indexed
+    // if !(operand1_index_present || operand2_index_present)
+    // {
+    //     // let last_char = name.chars().last();
+    //     // name = name[.. name.len() - 1].to_string();
+
+    //     // Remove last character since that will always be a "\n"
+
+    //     let last_char =
+    // }
+    // // chars.as_str().to_string()
+
+    // let index_width = if !(operand1_index_present || operand2_index_present)
+    // {
+    //     String::from(chars.next_back().unwrap())
+    // }
+    // else
+    // {
+    //     String::from("")
+    // };
+
+    // let move_width = match op
+    // {
+    //     OpCode::MOVbw
+    //     | OpCode::MOVww
+    //     | OpCode::MOVdw
+    //     | OpCode::MOVqw
+    //     | OpCode::MOVbd
+    //     | OpCode::MOVwd
+    //     | OpCode::MOVdd
+    //     | OpCode::MOVqd
+    //     | OpCode::MOVqq =>
+    //     {
+    //         String::from(chars.next_back().unwrap())
+    //     }
+
+    //     _ => String::from(""),
+    // };
+
+    let indices_present = operand1_index_present || operand2_index_present;
+
+    let postfix = match op
+    {
+        OpCode::MOVnw
+        | OpCode::MOVsnw =>
+        {
+            // Remove the move width and color it
+            let move_width = if !indices_present
+            {
+                String::from(chars.next_back().unwrap())
+            }
+            else
+            {
+                String::from("")
+            };
+
+            // COLOR IT
+            color_x16(move_width, options)
+        }
+
+        OpCode::MOVnd
+        | OpCode::MOVsnd =>
+        {
+            // Remove the move width and color it
+            let move_width = if !indices_present
+            {
+                String::from(chars.next_back().unwrap())
+            }
+            else
+            {
+                String::from("")
+            };
+
+            // COLOR IT
+
+            color_x32(move_width, options)
+        }
+
+        OpCode::MOVbw
+        | OpCode::MOVww
+        | OpCode::MOVdw
+        | OpCode::MOVqw
+        | OpCode::MOVbd
+        | OpCode::MOVwd
+        | OpCode::MOVdd
+        | OpCode::MOVqd
+        | OpCode::MOVqq =>
+        {
+            // If indices are present, keep them
+            let index_width = if indices_present
+            {
+                String::from(chars.next_back().unwrap())
+            }
+            else  // Remove it to get to the guaranteed move width
+            {
+                chars.next_back().unwrap();
+                String::from("")
+            };
+
+            let move_width = String::from(chars.next_back().unwrap());
+            let suffix = move_width + &index_width;
+
+            match op
+            {
+                OpCode::MOVbw | OpCode::MOVbd => color_x8(suffix, options),
+
+                OpCode::MOVww | OpCode::MOVwd => color_x16(suffix, options),
+
+                OpCode::MOVdw | OpCode::MOVdd => color_x32(suffix, options),
+
+                OpCode::MOVqw | OpCode::MOVqd | OpCode::MOVqq =>
+                {
+                    color_x64(suffix, options)
+                }
+
+                _ => unreachable!(),
+            }
+        }
+
+        _ => unreachable!(),
+    };
+
+    let postfixes_removed = chars.as_str().to_string();
+    name = color_opcode(postfixes_removed, options);
+    name += &postfix;
+
     disassemble_instruction(
         writer,
         options,
@@ -1224,8 +1397,6 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
     Ok(())
 }
 
-// TODO(pbz): Output the actual bytecode bytes (machine code) side by side
-// TODO(pbz): so that you can count the bytes for relative jumps!
 // TODO(pbz): Invest in some left/right justification
 // TODO(pbz): Justify in columns maybe?
 pub fn disassemble_instruction<W: std::io::Write>(
@@ -1260,7 +1431,7 @@ pub fn disassemble_instruction<W: std::io::Write>(
     // TODO(pbz): Longest instruction is 9
     if options.pad_output
     {
-        write!(writer, "{:<32}", instruction).unwrap();
+        write!(writer, "{}", instruction).unwrap();
     }
     else
     {
