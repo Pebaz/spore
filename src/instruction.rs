@@ -537,7 +537,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let comparison_is_64_bit = byte0_bits[6];
 
             // Have to obliterate name due to the reordering below:
-            name = String::from("CMPI");
+            name = color_opcode(String::from("CMPI"), options);
 
             let postfix = if comparison_is_64_bit
             {
@@ -1243,58 +1243,8 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
         }
     };
 
-    /*
-    If there are no indirects, remove the last character.
-    Some instructions must have at least one character though.
-    If it is one of those, remove that one also.
-
-    MOVsn -> remove 1 if no indirects
-    MOV -> remove 1 if no indirects, remove 1 more to color move width
-
-    */
-
     let mut name = format!("{:?}", op);
     let mut chars = name.chars();
-
-    // Can't presume operands are indexed
-    // if !(operand1_index_present || operand2_index_present)
-    // {
-    //     // let last_char = name.chars().last();
-    //     // name = name[.. name.len() - 1].to_string();
-
-    //     // Remove last character since that will always be a "\n"
-
-    //     let last_char =
-    // }
-    // // chars.as_str().to_string()
-
-    // let index_width = if !(operand1_index_present || operand2_index_present)
-    // {
-    //     String::from(chars.next_back().unwrap())
-    // }
-    // else
-    // {
-    //     String::from("")
-    // };
-
-    // let move_width = match op
-    // {
-    //     OpCode::MOVbw
-    //     | OpCode::MOVww
-    //     | OpCode::MOVdw
-    //     | OpCode::MOVqw
-    //     | OpCode::MOVbd
-    //     | OpCode::MOVwd
-    //     | OpCode::MOVdd
-    //     | OpCode::MOVqd
-    //     | OpCode::MOVqq =>
-    //     {
-    //         String::from(chars.next_back().unwrap())
-    //     }
-
-    //     _ => String::from(""),
-    // };
-
     let indices_present = operand1_index_present || operand2_index_present;
 
     let postfix = match op
@@ -1425,10 +1375,10 @@ pub fn disassemble_instruction<W: std::io::Write>(
             bytecode_output += format!("{:<02X?} ", byte).as_str();
         }
 
-        write!(writer, "{:>54} ", bytecode_output).unwrap();
-    }
+        bytecode_output = color_bytecode(bytecode_output, options);
 
-    // write!(writer, "    ").unwrap();
+        write!(writer, "{:>84} ", bytecode_output).unwrap();
+    }
 
     // TODO(pbz): Longest instruction is 9
     if options.pad_output

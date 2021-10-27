@@ -1,5 +1,5 @@
 use crate::options::Options;
-use crate::theme::Emit;
+use crate::theme::*;
 
 pub enum Operand
 {
@@ -49,28 +49,43 @@ impl Emit for Operand
         {
             Self::GeneralPurpose { register_index: index, indirect: at } =>
             {
+                let at_sym = if *at
+                {
+                    color_indirect("@".to_string(), options)
+                }
+                else
+                {
+                    "".to_string()
+                };
+
                 assert!((0u8 ..= 7u8).contains(&index));
 
-                format!(
-                    "{}R{}",
-                    if *at { "@" } else { "" },
-                    index
-                )
+                color_operand(format!("{}R{}", at_sym, index), options)
             }
 
             Self::Dedicated { register_index: index, indirect: at } =>
             {
-                assert!((0u8 ..= 1u8).contains(&index));
-
-                if *index == 0
+                let at_sym = if *at
                 {
-                    format!("{}FLAGS", if *at { "@" } else { "" })
+                    color_indirect("@".to_string(), options)
                 }
-
                 else
                 {
-                    format!("{}IP", if *at { "@" } else { "" })
+                    "".to_string()
+                };
+
+                assert!((0u8 ..= 1u8).contains(&index));
+
+                let result = if *index == 0
+                {
+                    format!("{}FLAGS", at_sym)
                 }
+                else
+                {
+                    format!("{}IP", at_sym)
+                };
+
+                color_operand(result, options)
             }
         }
     }

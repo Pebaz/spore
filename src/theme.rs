@@ -5,7 +5,7 @@ pub const SPORE_THEME: Theme = Theme
 {
     opcode: color(98, 168, 209),
     error: color(255, 0, 55),
-    bytecode: color(55, 55, 55),
+    bytecode: color(100, 100, 100),
     indirect: color(255, 0, 255),
     operand: color(255, 0, 255),
     index: color(255, 0, 255),
