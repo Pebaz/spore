@@ -1302,13 +1302,14 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
         OpCode::MOVnw
         | OpCode::MOVsnw =>
         {
-            // Remove the move width and color it
-            let move_width = if !indices_present
+            // If indices are present, keep them
+            let move_width = if indices_present
             {
                 String::from(chars.next_back().unwrap())
             }
-            else
+            else  // Remove it to get to the guaranteed move width
             {
+                chars.next_back().unwrap();
                 String::from("")
             };
 
@@ -1319,13 +1320,14 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
         OpCode::MOVnd
         | OpCode::MOVsnd =>
         {
-            // Remove the move width and color it
-            let move_width = if !indices_present
+            // If indices are present, keep them
+            let move_width = if indices_present
             {
                 String::from(chars.next_back().unwrap())
             }
-            else
+            else  // Remove it to get to the guaranteed move width
             {
+                chars.next_back().unwrap();
                 String::from("")
             };
 
