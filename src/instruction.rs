@@ -1418,6 +1418,8 @@ pub fn disassemble_instruction<W: std::io::Write>(
         write!(writer, " {}", op2.emit(options)).unwrap();
     }
 
+    // TODO(pbz): Write the last item on the line justified so that comments
+    // TODO(pbz): are all aligned
     if let Some(arg2) = argument2
     {
         match arg2
@@ -1447,7 +1449,12 @@ pub fn disassemble_instruction<W: std::io::Write>(
     // TODO(pbz): Adhere to a column so they line up
     if let Some(line_comment) = comment
     {
-        write!(writer, "  ;; {}", line_comment).unwrap();
+        let the_comment = color_comment(
+            format!("  ;; {}", line_comment),
+            options
+        );
+
+        write!(writer, "{}", the_comment).unwrap();
     }
 
     writeln!(writer, "").unwrap();

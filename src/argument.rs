@@ -1,6 +1,6 @@
 use crate::natural_index::NaturalIndex;
 use crate::options::Options;
-use crate::theme::Emit;
+use crate::theme::*;
 
 pub enum Argument
 {
@@ -42,17 +42,35 @@ impl Emit for Argument
                 format!("{}", natural_index.emit(options))
             }
 
-            Self::ImmediateU16(immediate) => format!("{}", immediate),
+            Self::ImmediateU16(immediate) =>
+            {
+                color_immediate(immediate.to_string(), options)
+            }
 
-            Self::ImmediateU32(immediate) => format!("{}", immediate),
+            Self::ImmediateU32(immediate) =>
+            {
+                color_immediate(immediate.to_string(), options)
+            }
 
-            // Self::ImmediateU64(immediate) => format!("{}", immediate),
+            // Self::ImmediateU64(immediate) =>
+            // {
+            //     color_immediate(immediate.to_string(), options)
+            // }
 
-            Self::ImmediateI16(immediate) => format!("{}", immediate),
+            Self::ImmediateI16(immediate) =>
+            {
+                color_immediate(immediate.to_string(), options)
+            }
 
-            Self::ImmediateI32(immediate) => format!("{}", immediate),
+            Self::ImmediateI32(immediate) =>
+            {
+                color_immediate(immediate.to_string(), options)
+            }
 
-            Self::ImmediateI64(immediate) => format!("{}", immediate),
+            Self::ImmediateI64(immediate) =>
+            {
+                color_immediate(immediate.to_string(), options)
+            }
         }
     }
 }

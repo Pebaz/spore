@@ -1,5 +1,5 @@
 use crate::options::Options;
-use crate::theme::Emit;
+use crate::theme::*;
 use crate::bits::*;
 
 const SIZE_OF_VOID_PTR: u16 = 8;
@@ -112,9 +112,9 @@ impl Emit for NaturalIndex
         format!(
             "({}{}, {}{})",
             if self.sign < 0 { "-" } else { "+" },
-            self.natural,
+            color_index(self.natural.to_string(), options),
             if self.sign < 0 { "-" } else { "+" },
-            self.constant
+            color_index(self.constant.to_string(), options)
         )
     }
 }
