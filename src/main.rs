@@ -107,7 +107,7 @@ fn main()
             Ok(file) => file,
             Err(msg) =>
             {
-                println!("{}", format!("{}", msg).red());
+                println!("{}", color_error(format!("{}", msg), &options));
                 return;
             }
         };

@@ -132,7 +132,6 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
     let byte1 = bytes.next().ok_or("Unexpected end of bytes")?;
     let byte1_bits = bits_rev(byte1);
 
-    // TODO(pbz): Make sure to only allocate max bytes needed
     let mut bytecode = ArrayVec::<_, 18>::new();
     bytecode.push(byte0);
     bytecode.push(byte1);
@@ -161,9 +160,6 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
 
     let (op1, arg1, op2, arg2, comment) = match op
     {
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        // TODO(pbz): THIS IS VERY IMPORTANT. CHECK THIS VERY CAREFULLY
-        // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         OpCode::CALL =>
         {
             let is_native_call = byte1_bits[5];
@@ -408,7 +404,6 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
     Ok(())
 }
 
-// TODO(pbz): There is a lot of duplicated code here. Consolidate it.
 pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
     writer: &mut W,
     options: &Options,
@@ -1372,8 +1367,6 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
     Ok(())
 }
 
-// TODO(pbz): Invest in some left/right justification
-// TODO(pbz): Justify in columns maybe?
 pub fn disassemble_instruction<W: std::io::Write>(
     writer: &mut W,
     options: &Options,
@@ -1403,7 +1396,6 @@ pub fn disassemble_instruction<W: std::io::Write>(
         write!(writer, "{:>84} ", bytecode_output).unwrap();
     }
 
-    // TODO(pbz): Longest instruction is 9
     if options.pad_output
     {
         write!(writer, "{}", instruction).unwrap();
@@ -1441,8 +1433,6 @@ pub fn disassemble_instruction<W: std::io::Write>(
         write!(writer, " {}", op2.emit(options)).unwrap();
     }
 
-    // TODO(pbz): Write the last item on the line justified so that comments
-    // TODO(pbz): are all aligned
     if let Some(arg2) = argument2
     {
         match arg2
@@ -1469,7 +1459,6 @@ pub fn disassemble_instruction<W: std::io::Write>(
         }
     }
 
-    // TODO(pbz): Adhere to a column so they line up
     if let Some(line_comment) = comment
     {
         let the_comment = color_comment(

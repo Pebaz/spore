@@ -15,19 +15,43 @@ pub const SPORE_THEME: Theme = Theme
     x16: color(221, 217, 159),  // Yellow
     x32: color(168, 132, 88),  // Tan
     x64: color(125, 95, 102),  // Red
-    // x8: color(0, 155, 255),  // Bright blue
-    // x16: color(255, 200, 0),  // Bright yellow
-    // x32: color(155, 255, 0),  // Bright green
-    // x64: color(255, 0, 55),  // Bright red
 };
 
-// TODO(pbz): Gravity Falls McGucket theme like that old computer!
-// TODO(pbz): Matterhorn Village Theme
+pub const INDUSTRIAL_COMPUTER: Theme = Theme
+{
+    opcode: color(161, 156, 148),
+    error: color(255, 0, 0),
+    bytecode: color(77, 75, 73),
+    indirect: color(255, 153, 0),
+    operand: color(161, 156, 148),
+    index: color(255, 153, 0),
+    immediate: color(255, 153, 0),
+    comment: color(82, 214, 0),
+    x8: color(0, 45, 122),
+    x16: color(161, 78, 0),
+    x32: color(3, 99, 0),
+    x64: color(110, 18, 0),
+};
+
+pub const MATTERHORN_ZERMATT_VILLAGE: Theme = Theme
+{
+    opcode: color(173, 185, 201),
+    error: color(255, 153, 0),
+    bytecode: color(211, 195, 212),
+    indirect: color(107, 129, 138),
+    operand: color(115, 131, 153),
+    index: color(140, 135, 128),
+    immediate: color(199, 131, 64),
+    comment: color(97, 93, 88),
+    x8: color(110, 73, 35),
+    x16: color(156, 103, 50),
+    x32: color(199, 131, 64),
+    x64: color(237, 156, 76),
+};
 
 pub struct Theme
 {
-    // (Foreground, Background, Style)
-    pub opcode: Color,  // (Option<Color>, Option<Color>, Option<Style>),
+    pub opcode: Color,
     pub error: Color,
     pub bytecode: Color,
     pub indirect: Color,
@@ -56,8 +80,6 @@ pub fn colored_string(string: String, color: Color) -> String
     else { string }
 }
 
-// TODO(pbz): Perhaps no more need for this once Options are passed directly to
-// TODO(pbz): .color() methods on each type.
 pub fn color_opcode(string: String, options: &Options) -> String
 {
     if let Some(color_theme) = &options.theme
@@ -182,6 +204,5 @@ pub fn color_x64(string: String, options: &Options) -> String
 
 pub trait Emit
 {
-    // TODO(pbz): emit(string_buffer: &mut ArrayString, ...)
     fn emit(&self, options: &Options) -> String;
 }
