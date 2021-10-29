@@ -205,6 +205,8 @@ immensely satisfying! 🙃
 Once I had working Rust unit tests, I went on to polish the CLI and fix bits
 and bobs of miscellaneous todo items. The rest is what you see in this README!
 
+<img src="misc/Screenshot1.png" width=70%>
+
 **All in all, the project took me 20 days to complete.**
 
 Some things that I noticed while working on Spore:
