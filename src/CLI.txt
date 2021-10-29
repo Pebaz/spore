@@ -4,7 +4,7 @@ Usage:
     $ spore [OPTIONS] <FILENAME>
 
 OPTIONS (default is first item in list):
-    theme: [SPORE | INDUSTRIAL_COMPUTER | MATTERHORN_ZERMATT_VILLAGE]
+    theme: [SPORE | INDUSTRIAL_COMPUTER | MATTERHORN_ZERMATT_VILLAGE | OFF]
         Color theme to output assembly in
 
     bytecode: [ON | OFF]
