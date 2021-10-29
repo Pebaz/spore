@@ -1,0 +1,25 @@
+Spore - Disassembler for UEFI Bytecode
+
+Usage:
+    $ spore [OPTIONS] <FILENAME>
+
+OPTIONS (default is first item in list):
+    theme: [SPORE | INDUSTRIAL_COMPUTER | MATTERHORN_ZERMATT_VILLAGE]
+        Color theme to output assembly in
+
+    bytecode: [ON | OFF]
+        Determines whether to also print out bytecode alongside assembly
+
+    pe: [ON | OFF]
+        ON = Windows PE file, OFF = binary file containing only UEFI Bytecode
+
+EXAMPLES:
+    $ spore bytecode-file.efi
+    $ spore bytecode: OFF bytecode-file.efi
+    $ spore bytecode: OFF bytecode-file.efi
+    $ spore theme: SPORE bytecode-file.efi
+    $ spore bytecode: ON theme: SPORE bytecode-file.efi
+    $ spore bytecode: ON theme: SPORE bytecode-file.efi
+    $ spore pe: ON bytecode-file.efi
+    $ spore pe: OFF bytecode-file.bin
+    $ spore pe: OFF theme: SPORE bytecode-file.bin

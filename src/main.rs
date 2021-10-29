@@ -87,6 +87,14 @@ use crate::opcode::OpCode;
 use crate::options::Options;
 use crate::theme::*;
 
+
+use std::fs::File;
+use std::path::Path;
+use pelite::{FileMap, Result};
+use pelite::pe64::{Pe, PeFile};
+
+const CODE_SECTION: u32 = pelite::image::IMAGE_SCN_CNT_CODE;
+
 /// Reads in an EFI Bytecode filename from STDIN and prints the disassembly.
 fn main()
 {
@@ -94,7 +102,7 @@ fn main()
     let options = Options
     {
         pad_output: true,
-        theme: Some(SPORE_THEME),
+        theme: Some(SPORE),
         bytecode: true,
     };
 
@@ -111,33 +119,72 @@ fn main()
                 return;
             }
         };
-        let mut bytes = file.bytes().map(|b| b.unwrap());
 
-        loop
+        // let mut bytes = file.bytes().map(|b| b.unwrap());
+        // let mut bytes = file.bytes().cloned();
+
+        let mut bytecode_section = None;
+        let file_map = FileMap::open("../glop/drive/EFI/BOOT/BOOTX64.efi");
+
+        if file_map.is_err()
         {
-            let result = OpCode::disassemble(
-                &options,
-                &mut io::stdout(),
-                &mut bytes
-            );
+            println!("{}", "what?");
+            return;
+        }
 
-            match result
+        let file_bytes = file_map.unwrap();
+        let file = PeFile::from_bytes(&file_bytes).unwrap();
+
+        // Find the section header for code
+        for section_header in file.section_headers()
+        {
+            if section_header.Characteristics & CODE_SECTION != 0
             {
-                Ok(_) => (),
+                bytecode_section = Some(
+                    file.get_section_bytes(section_header).unwrap()
+                );
 
-                Err(msg) =>
+                break;
+            }
+        }
+
+        match bytecode_section
+        {
+            Some(code_bytes) =>
+            {
+                let mut bytes = code_bytes.iter().cloned();
+
+                loop
                 {
-                    println!("{}", msg);
-                    break;
+                    let result = OpCode::disassemble(
+                        &options,
+                        &mut io::stdout(),
+                        &mut bytes
+                    );
+
+                    match result
+                    {
+                        Ok(_) => (),
+
+                        Err(msg) =>
+                        {
+                            println!("{}", msg);
+                            break;
+                        }
+                    }
                 }
+            }
+
+            None =>
+            {
+                println!("{}", "what?");
+                return;
             }
         }
     }
 
     if show_help
     {
-        println!(
-            "Spore - Disassembler for UEFI Bytecode\nUsage: spore <FILENAME>"
-        );
+        println!(include_str!("CLI.txt"));
     }
 }

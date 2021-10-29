@@ -1,7 +1,7 @@
 use colored::*;
 use crate::options::Options;
 
-pub const SPORE_THEME: Theme = Theme
+pub const SPORE: Theme = Theme
 {
     opcode: color(217, 207, 199),  // White
     error: color(207, 66, 31),  // Red
