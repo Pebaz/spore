@@ -1,3 +1,73 @@
+/*
+Instruction Type Breakdown:
+
+7. INSTRUCTION OP1 ARGUMENT, OP2 ARGUMENT
+    MOVnw
+    MOVnd
+    MOVbw
+    MOVww
+    MOVdw
+    MOVqw
+    MOVbd
+    MOVwd
+    MOVdd
+    MOVqd
+    MOVqq
+    MOVsnw
+    MOVsnd
+
+6. ✅ INSTRUCTION OP1, OP2 ARGUMENT (16 bit optional index/immediate)
+    ADD
+    AND
+    ASHR
+    CMP
+    DIV
+    DIVU
+    EXTENDB
+    EXTENDD
+    EXTENDW
+    MOD
+    MODU
+    MUL
+    MULU
+    NEG
+    NOT
+    OR
+    SHL
+    SHR
+    SUB
+    XOR
+
+5. ✅ INSTRUCTION OP1 ARGUMENT, ARGUMENT
+    CMPI
+    MOVI
+    MOVIn
+    MOVREL
+
+4. ✅ INSTRUCTION OP1, OP2
+    STORESP
+    LOADSP
+
+3. ✅ INSTRUCTION OP1 ARGUMENT
+    CALL32
+    JMP32
+    PUSH
+    PUSHn
+    POP
+    POPn
+    JMP64
+    CALL64
+
+2. ✅ INSTRUCTION ARGUMENT
+    JMP8
+    BREAK
+    JMP64
+    CALL64
+
+1. ✅ INSTRUCTION
+    RET
+*/
+
 use arrayvec::ArrayVec;
 use crate::opcode::*;
 use crate::operand::*;
