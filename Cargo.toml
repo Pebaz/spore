@@ -1,8 +1,14 @@
 [package]
 name = "spore"
 version = "0.1.0"
+description = "UEFI Bytecode Disassembler"
+authors = ["https://github.com/Pebaz"]
 edition = "2021"
 license = "Zlib"
+keywords = ["disassembler", "UEFI", "bytecode", "assembly"]
+categories = ["compilers"]
+repository = "https://github.com/Pebaz/spore"
+readme = "README.md"
 
 [dependencies]
 colored = "2.0.0"
