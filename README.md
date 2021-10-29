@@ -17,7 +17,7 @@ VM, see [section 22 of the UEFI Specification](https://uefi.org/sites/default/fi
 ## Installation
 
 ```bash
-$ cargo install spore
+$ cargo install spore-disassembler
 
 # Or alternatively
 $ cargo install --git https://github.com/Pebaz/spore
