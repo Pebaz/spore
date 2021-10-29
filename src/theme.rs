@@ -3,18 +3,18 @@ use crate::options::Options;
 
 pub const SPORE: Theme = Theme
 {
-    opcode: color(217, 207, 199),  // White
-    error: color(207, 66, 31),  // Red
-    bytecode: color(84, 71, 52),  // Brown
-    indirect: color(227, 202, 113),  // Light yellow
-    operand: color(135, 75, 41),  // Dark Orange
-    index: color(217, 182, 130),  // Dark tan
-    immediate: color(191, 151, 169),  // Light Purple
-    comment: color(135, 107, 55),  // Brown
-    x8: color(173, 152, 169),  // Purple
-    x16: color(221, 217, 159),  // Yellow
-    x32: color(168, 132, 88),  // Tan
-    x64: color(125, 95, 102),  // Red
+    opcode: color(217, 207, 199),
+    error: color(207, 66, 31),
+    bytecode: color(84, 71, 52),
+    indirect: color(227, 202, 113),
+    operand: color(135, 75, 41),
+    index: color(217, 182, 130),
+    immediate: color(191, 151, 169),
+    comment: color(135, 107, 55),
+    x8: color(173, 152, 169),
+    x16: color(221, 217, 159),
+    x32: color(168, 132, 88),
+    x64: color(125, 95, 102),
 };
 
 pub const INDUSTRIAL_COMPUTER: Theme = Theme

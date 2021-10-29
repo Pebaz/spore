@@ -1,50 +1,4 @@
 
-// pub fn bits(byte: u8) -> [bool; 8]
-// {
-//     let mut bits = [false; 8];
-
-//     for i in 0 .. 8
-//     {
-//         if byte & 2u8.pow(i) > 0
-//         {
-//             bits[(bits.len() - 1) - i as usize] = true;
-//         }
-//     }
-
-//     bits
-// }
-
-
-// pub fn bits_u8(byte: u8) -> [bool; 8]
-// {
-//     let mut bits = [false; 8];
-
-//     for i in 0 .. 8
-//     {
-//         if byte & 2u8.pow(i) > 0
-//         {
-//             bits[(bits.len() - 1) - i as usize] = true;
-//         }
-//     }
-
-//     bits
-// }
-
-// pub fn bits_to_byte_u8(bits: &[bool]) -> u8
-// {
-//     let mut byte = 0;
-
-//     for (i, bit) in bits.iter().rev().enumerate()
-//     {
-//         if *bit
-//         {
-//             // byte += 2u8.pow((bits.len() - 1 - i) as u32);
-//             byte += 2u8.pow((i) as u32);
-//         }
-//     }
-//     byte
-// }
-
 pub fn bits_u16(byte: u16) -> [bool; 16]
 {
     let mut bits = [false; 16];
@@ -171,13 +125,6 @@ mod tests
     #[test]
     pub fn test_bits_to_byte()
     {
-        // assert_eq!(bits_to_byte_u8(&[true, false]), 2u8);
-        // assert_eq!(bits_to_byte_u8(&[false, true, false]), 2u8);
-        // assert_eq!(bits_to_byte_u8(&[true, false, false]), 4u8);
-        // assert_eq!(bits_to_byte_u8(&[true, false, false, false]), 8u8);
-        // assert_eq!(bits_to_byte_u8(&[true, false, false, true]), 9u8);
-        // assert_eq!(bits_to_byte_u8(&[true, false, true, true]), 11u8);
-
         assert_eq!(bits_to_byte_u32(&[true, false]), 2u32);
         assert_eq!(bits_to_byte_u32(&[false, true, false]), 2u32);
         assert_eq!(bits_to_byte_u32(&[true, false, false]), 4u32);
@@ -192,23 +139,4 @@ mod tests
         assert_eq!(bits_to_byte_u64(&[true, false, false, true]), 9u64);
         assert_eq!(bits_to_byte_u64(&[true, false, true, true]), 11u64);
     }
-
-    // #[test]
-    // pub fn test_bits()
-    // {
-    //     assert_eq!(
-    //         bits_u8(2u8),
-    //         [false, false, false, false, false, false, true, false]
-    //     );
-
-    //     assert_eq!(
-    //         bits_u8(4u8),
-    //         [false, false, false, false, false, true, false, false]
-    //     );
-
-    //     assert_eq!(
-    //         bits_u8(0x32u8),
-    //         [false, false, true, true, false, false, true, false]
-    //     );
-    // }
 }

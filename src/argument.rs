@@ -9,7 +9,6 @@ pub enum Argument
     Index64(u64),
     ImmediateU16(u16),
     ImmediateU32(u32),
-    // ImmediateU64(u64),  // Commenting out for now since nothing is using it
     ImmediateI16(i16),
     ImmediateI32(i32),
     ImmediateI64(i64),
@@ -51,11 +50,6 @@ impl Emit for Argument
             {
                 color_immediate(immediate.to_string(), options)
             }
-
-            // Self::ImmediateU64(immediate) =>
-            // {
-            //     color_immediate(immediate.to_string(), options)
-            // }
 
             Self::ImmediateI16(immediate) =>
             {

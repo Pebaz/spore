@@ -336,7 +336,6 @@ impl OpCode
             | OpCode::XOR =>
             {
                 // 6. INSTRUCTION OP1, OP2 ARGUMENT
-                // (16 bit optional index/immediate) (MUL)
                 parse_instruction6(
                     writer,
                     options,

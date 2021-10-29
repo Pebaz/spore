@@ -1,13 +1,23 @@
 # Spore - UEFI Bytecode Disassembler
 
+> A disassembler for the UEFI Bytecode Virtual Machine.
+
 ### About
 
-<table>
+<!-- <table>
     <tr>
-        <td><img src="misc/Assembly1.png"></td>
-        <td><img src="misc/Disassembly1.png"></td>
+        <td>
+            Assembly written using FASMG-EBC UEFI Bytecode Assembler
+            <img src="misc/Assembly1.png">
+            <img src="misc/Disassembly1.png">
+        </td>
+        <td>
+            Output
+            <img src="misc/Disassembly1.png">
+            <img src="misc/Disassembly1.png">
+        </td>
     </tr>
-</table>
+</table> -->
 
 ### Usage
 

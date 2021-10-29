@@ -41,8 +41,7 @@ fn main()
         theme: Some(SPORE),
         bytecode: true,
         pe: true,
-
-        pad_output: true,  // ? Have this as a CLI option?
+        pad_output: true,
     };
 
     for i in (0 .. args.len()).step_by(2)
