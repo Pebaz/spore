@@ -85,14 +85,13 @@ fn main()
             {
                 if value != "ON".to_string() && value != "OFF".to_string()
                 {
-                    println!(
+                    return println!(
                         "{}",
                         color_error(
                             format!("Invalid bytecode setting: {}", value),
                             &options
                         ),
                     );
-                    return println!(include_str!("CLI.txt"));
                 }
 
                 options.bytecode = value == "ON";
@@ -102,14 +101,13 @@ fn main()
             {
                 if value != "ON".to_string() && value != "OFF".to_string()
                 {
-                    println!(
+                    return println!(
                         "{}",
                         color_error(
                             format!("Invalid pe setting: {}", value),
                             &options
                         ),
                     );
-                    return println!(include_str!("CLI.txt"));
                 }
 
                 options.pe = value == "ON";
@@ -118,14 +116,13 @@ fn main()
 
             _ =>
             {
-                println!(
+                return println!(
                     "{}",
                     color_error(
                         format!("Invalid setting: {}", option),
                         &options
                     ),
                 );
-                return println!(include_str!("CLI.txt"));
             }
         }
     }
