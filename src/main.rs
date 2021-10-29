@@ -105,12 +105,7 @@ fn main()
         return println!("{}", HELP);
     }
 
-    println!("{:?}", args);
-    let filename = args.pop();
-    println!("{:?}", args);
-    println!("{:?}", filename);
-    // let args = args.join(" ");
-    // println!("{:?}", args);
+    let filename = args.pop().unwrap();
 
     if args.len() % 2 != 0
     {
@@ -211,13 +206,61 @@ fn main()
         }
     }
 
-    // let mut show_help = true;
-    // let options = Options
-    // {
-    //     pad_output: true,
-    //     theme: Some(SPORE),
-    //     bytecode: true,
-    // };
+    match FileMap::open(filename.as_str())
+    {
+        Ok(file_bytes) =>
+        {
+            let mut bytes = if options.pe
+            {
+                let file = PeFile::from_bytes(&file_bytes).unwrap();
+
+                // Find the section header for code
+                // for section_header in file.section_headers()
+                // {
+                //     if section_header.Characteristics & CODE_SECTION != 0
+                //     {
+                //         bytecode_section = Some(
+                //             file.get_section_bytes(section_header).unwrap()
+                //         );
+
+                //         break;
+                //     }
+                // }
+
+                file_bytes.as_ref().iter().cloned()
+            }
+            else
+            {
+                println!("NOT USING PE");
+                file_bytes.as_ref().iter().cloned()
+            };
+
+            loop
+            {
+                let result = OpCode::disassemble(
+                    &options,
+                    &mut io::stdout(),
+                    &mut bytes
+                );
+
+                match result
+                {
+                    Ok(_) => (),
+
+                    Err(msg) =>
+                    {
+                        println!("{}", msg);
+                        break;
+                    }
+                }
+            }
+        }
+
+        Err(msg) =>
+        {
+            return println!("{}", color_error(format!("{}", msg), &options));
+        }
+    }
 
     // for bytecode_file in std::env::args().skip(1).take(1)
     // {
@@ -300,10 +343,5 @@ fn main()
     //             );
     //         }
     //     }
-    // }
-
-    // if show_help
-    // {
-    //     println!(include_str!("CLI.txt"));
     // }
 }
