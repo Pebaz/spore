@@ -1,5 +1,5 @@
 [package]
-name = "spore"
+name = "spore-disassembler"
 version = "0.1.0"
 description = "UEFI Bytecode Disassembler"
 authors = ["https://github.com/Pebaz"]
@@ -9,6 +9,10 @@ keywords = ["disassembler", "UEFI", "bytecode", "assembly"]
 categories = ["compilers"]
 repository = "https://github.com/Pebaz/spore"
 readme = "README.md"
+
+[[bin]]
+name = "spore"
+path = "src/main.rs"
 
 [dependencies]
 colored = "2.0.0"
