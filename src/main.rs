@@ -132,7 +132,23 @@ fn main()
         {
             let byte_slice = if options.pe
             {
-                let file = PeFile::from_bytes(&file_bytes).unwrap();
+                let file = PeFile::from_bytes(&file_bytes);
+
+                if let Err(msg) = file
+                {
+                    let err_msg = format!(
+                        "Failed to open PE executable: {}\n{}",
+                        msg,
+                        [
+                            "Are you trying to load a binary file as a PE ",
+                            "executable (try pe: OFF)?"
+                        ].join("")
+                    );
+
+                    return println!("{}", color_error(err_msg, &options));
+                }
+
+                let file = file.unwrap();
                 let mut bytecode_section = None;
 
                 // Find the section header for code
@@ -193,7 +209,13 @@ fn main()
 
         Err(msg) =>
         {
-            return println!("{}", color_error(format!("{}", msg), &options));
+            return println!(
+                "{}",
+                color_error(
+                    format!("Error opening file: {}", msg),
+                    &options
+                )
+            );
         }
     }
 }
