@@ -8,6 +8,7 @@ license = "Zlib"
 keywords = ["disassembler", "UEFI", "bytecode", "assembly"]
 categories = ["compilers"]
 repository = "https://github.com/Pebaz/spore"
+homepage = "https://github.com/Pebaz/spore"
 readme = "README.md"
 
 [[bin]]
