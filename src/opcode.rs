@@ -245,6 +245,10 @@ impl OpCode
                         bytes.next();  // Skip this and the next zero
                         Ok(())
                     }
+                    else if *byte > 6  // 1-6 are valid break codes
+                    {
+                        Ok(())  // Only skip this zero
+                    }
                     else
                     {
                         // 2. INSTRUCTION ARGUMENT (BREAK)
