@@ -93,7 +93,7 @@ checksum = "7a7cf3f8ecebb0f4895f4892a8be0a0dc81b498f9d56735cb769dc31bf00815b"
 
 [[package]]
 name = "spore-disassembler"
-version = "0.1.0"
+version = "0.1.1"
 dependencies = [
  "arrayvec",
  "colored",
