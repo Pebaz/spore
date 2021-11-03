@@ -6,7 +6,7 @@ fn dis(options: &Options, cursor: &mut Cursor<Vec<u8>>, bytecode: &[u8]) -> Stri
     let result = OpCode::disassemble(
         &options,
         cursor,
-        &mut bytecode.into_iter().cloned()
+        &mut bytecode.into_iter().cloned().peekable()
     );
 
     match result
@@ -40,6 +40,7 @@ pub fn test_instruction_disassembly()
         theme: None,
         bytecode: false,
         pad_output: false,
+        pe: false,
     };
 
     let cur = &mut Cursor::new(Vec::with_capacity(50));

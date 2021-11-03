@@ -184,7 +184,7 @@ fn main()
                 file_bytes.as_ref()
             };
 
-            let mut bytes = byte_slice.iter().cloned();
+            let mut bytes = byte_slice.iter().cloned().peekable();
 
             loop
             {

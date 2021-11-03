@@ -1,6 +1,6 @@
 [package]
 name = "spore-disassembler"
-version = "0.1.0"
+version = "0.1.1"
 description = "UEFI Bytecode Disassembler"
 authors = ["https://github.com/Pebaz"]
 edition = "2021"

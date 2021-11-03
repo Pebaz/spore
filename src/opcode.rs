@@ -205,10 +205,15 @@ impl std::convert::TryFrom<u8> for OpCode
 impl OpCode
 {
     /// Bytes are read from left to right. Bits are read from right to left.
+    // pub fn disassemble<T: Iterator<Item=u8>, W: std::io::Write>(
+    //     options: &Options,
+    //     writer: &mut W,
+    //     bytes: &mut T
+    // ) -> Result<(), String>
     pub fn disassemble<T: Iterator<Item=u8>, W: std::io::Write>(
         options: &Options,
         writer: &mut W,
-        bytes: &mut T
+        bytes: &mut std::iter::Peekable<T>
     ) -> Result<(), String>
     {
         let byte0 = if let Some(byte) = bytes.next()
@@ -231,6 +236,34 @@ impl OpCode
 
         match op
         {
+            OpCode::BREAK =>
+            {
+                if let Some(byte) = bytes.peek()
+                {
+                    if *byte == 0
+                    {
+                        bytes.next();  // Skip this and the next zero
+                        Ok(())
+                    }
+                    else
+                    {
+                        // 2. INSTRUCTION ARGUMENT (BREAK)
+                        parse_instruction2(
+                            writer,
+                            options,
+                            bytes,
+                            byte0,
+                            byte0_bits,
+                            op
+                        )
+                    }
+                }
+                else
+                {
+                    Ok(())
+                }
+            }
+
             // 1. INSTRUCTION (RET)
             OpCode::RET =>
             {
@@ -244,8 +277,7 @@ impl OpCode
                 )
             }
 
-            OpCode::JMP8
-            | OpCode::BREAK =>
+            OpCode::JMP8 =>
             {
                 // 2. INSTRUCTION ARGUMENT (BREAK)
                 parse_instruction2(
