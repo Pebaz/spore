@@ -25,7 +25,12 @@ $ cargo install --git https://github.com/Pebaz/spore
 
 ## Demo
 
-Given the following FASMG-EBC UEFI Bytecode Assembly file:
+Although Spore will work with any EBC binary, users will most likely benefit
+from [fasmg-ebc-rs](https://github.com/Pebaz/fasmg-ebc-rs) which makes it much
+simpler to work with the [fasmg-ebc](https://github.com/pbatard/fasmg-ebc)
+assembler.
+
+Given the following fasmg-ebc UEFI Bytecode Assembly file:
 
 ```x86asm
 ;; Adapted from https://github.com/pbatard/fasmg-ebc/blob/master/hello.asm
@@ -56,15 +61,12 @@ section '.data' data readable writeable
     string_hello: du "Hello World!", 0x0A, 0x0
 ```
 
-
-Compile it using [FASMG-EBC](https://github.com/pbatard/fasmg-ebc) by cloning
-the project and putting the file into the project root.
-
-Save it to a familiar name such as "bc.asm" for example.
+Compile it using [fasmg-ebc-rs](https://github.com/Pebaz/fasmg-ebc-rs) by using
+the below command:
 
 ```bash
-# Generates `bc.efi`
-$ make bc.asm
+$ cargo install fasmg-ebc-rs
+$ fasmg-ebc-rs bc.asm bc.efi
 
 # This is a PE executable that contains UEFI Bytecode
 $ file bc.efi

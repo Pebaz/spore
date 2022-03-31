@@ -1,7 +1,7 @@
 /*
 Instruction Type Breakdown:
 
-7. INSTRUCTION OP1 ARGUMENT, OP2 ARGUMENT
+7. ✅ INSTRUCTION OP1 ARGUMENT, OP2 ARGUMENT
     MOVnw
     MOVnd
     MOVbw
