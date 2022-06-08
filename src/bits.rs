@@ -1,4 +1,3 @@
-
 pub fn bits_u16(byte: u16) -> [bool; 16]
 {
     let mut bits = [false; 16];

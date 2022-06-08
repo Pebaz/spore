@@ -41,30 +41,15 @@ impl Emit for Argument
                 format!("{}", natural_index.emit(options))
             }
 
-            Self::ImmediateU16(immediate) =>
-            {
-                color_immediate(immediate.to_string(), options)
-            }
+            Self::ImmediateU16(immediate) => color_immediate(immediate.to_string(), options),
 
-            Self::ImmediateU32(immediate) =>
-            {
-                color_immediate(immediate.to_string(), options)
-            }
+            Self::ImmediateU32(immediate) => color_immediate(immediate.to_string(), options),
 
-            Self::ImmediateI16(immediate) =>
-            {
-                color_immediate(immediate.to_string(), options)
-            }
+            Self::ImmediateI16(immediate) => color_immediate(immediate.to_string(), options),
 
-            Self::ImmediateI32(immediate) =>
-            {
-                color_immediate(immediate.to_string(), options)
-            }
+            Self::ImmediateI32(immediate) => color_immediate(immediate.to_string(), options),
 
-            Self::ImmediateI64(immediate) =>
-            {
-                color_immediate(immediate.to_string(), options)
-            }
+            Self::ImmediateI64(immediate) => color_immediate(immediate.to_string(), options),
         }
     }
 }

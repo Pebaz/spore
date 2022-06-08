@@ -1,17 +1,18 @@
+mod argument;
+mod bits;
+mod instruction;
+mod natural_index;
 mod opcode;
 mod operand;
-mod argument;
-mod natural_index;
-mod instruction;
-mod bits;
 mod options;
 mod theme;
 
 #[cfg(test)]
-mod tests;  // Integration tests
+mod tests; // Integration tests
 
-use pelite::FileMap;
 use pelite::pe64::{Pe, PeFile};
+use pelite::FileMap;
+
 use crate::opcode::OpCode;
 use crate::options::Options;
 use crate::theme::*;
@@ -36,13 +37,7 @@ fn main()
         return println!("{}", HELP);
     }
 
-    let mut options = Options
-    {
-        theme: Some(SPORE),
-        bytecode: true,
-        pe: true,
-        pad_output: true,
-    };
+    let mut options = Options { theme: Some(SPORE), bytecode: true, pe: true, pad_output: true };
 
     for i in (0 .. args.len()).step_by(2)
     {
@@ -53,16 +48,9 @@ fn main()
         {
             "theme:" =>
             {
-                if !"SPORE INDUSTRIAL_COMPUTER MATTERHORN_ZERMATT_VILLAGE OFF"
-                    .contains(&value)
+                if !"SPORE INDUSTRIAL_COMPUTER MATTERHORN_ZERMATT_VILLAGE OFF".contains(&value)
                 {
-                    println!(
-                        "{}",
-                        color_error(
-                            format!("Unknown theme: {}", value),
-                            &options
-                        ),
-                    );
+                    println!("{}", color_error(format!("Unknown theme: {}", value), &options),);
                     return println!("{}", HELP);
                 }
 
@@ -70,10 +58,7 @@ fn main()
                 {
                     "SPORE" => Some(SPORE),
                     "INDUSTRIAL_COMPUTER" => Some(INDUSTRIAL_COMPUTER),
-                    "MATTERHORN_ZERMATT_VILLAGE" =>
-                    {
-                        Some(MATTERHORN_ZERMATT_VILLAGE)
-                    }
+                    "MATTERHORN_ZERMATT_VILLAGE" => Some(MATTERHORN_ZERMATT_VILLAGE),
                     "OFF" => None,
 
                     _ => unreachable!(),
@@ -84,13 +69,7 @@ fn main()
             {
                 if value != "ON".to_string() && value != "OFF".to_string()
                 {
-                    return println!(
-                        "{}",
-                        color_error(
-                            format!("Invalid bytecode setting: {}", value),
-                            &options
-                        ),
-                    );
+                    return println!("{}", color_error(format!("Invalid bytecode setting: {}", value), &options),);
                 }
 
                 options.bytecode = value == "ON";
@@ -100,28 +79,15 @@ fn main()
             {
                 if value != "ON".to_string() && value != "OFF".to_string()
                 {
-                    return println!(
-                        "{}",
-                        color_error(
-                            format!("Invalid pe setting: {}", value),
-                            &options
-                        ),
-                    );
+                    return println!("{}", color_error(format!("Invalid pe setting: {}", value), &options),);
                 }
 
                 options.pe = value == "ON";
             }
 
-
             _ =>
             {
-                return println!(
-                    "{}",
-                    color_error(
-                        format!("Invalid setting: {}", option),
-                        &options
-                    ),
-                );
+                return println!("{}", color_error(format!("Invalid setting: {}", option), &options),);
             }
         }
     }
@@ -139,10 +105,7 @@ fn main()
                     let err_msg = format!(
                         "Failed to open PE executable: {}\n{}",
                         msg,
-                        [
-                            "Are you trying to load a binary file as a PE ",
-                            "executable (try pe: OFF)?"
-                        ].join("")
+                        ["Are you trying to load a binary file as a PE ", "executable (try pe: OFF)?"].join("")
                     );
 
                     return println!("{}", color_error(err_msg, &options));
@@ -156,9 +119,7 @@ fn main()
                 {
                     if section_header.Characteristics & CODE_SECTION != 0
                     {
-                        bytecode_section = Some(
-                            file.get_section_bytes(section_header).unwrap()
-                        );
+                        bytecode_section = Some(file.get_section_bytes(section_header).unwrap());
 
                         break;
                     }
@@ -169,13 +130,7 @@ fn main()
                     Some(bytecode) => bytecode,
                     None =>
                     {
-                        return println!(
-                            "{}",
-                            color_error(
-                                "PE file is missing code section".to_string(),
-                                &options
-                            )
-                        );
+                        return println!("{}", color_error("PE file is missing code section".to_string(), &options));
                     }
                 }
             }
@@ -188,11 +143,7 @@ fn main()
 
             loop
             {
-                let result = OpCode::disassemble(
-                    &options,
-                    &mut std::io::stdout(),
-                    &mut bytes
-                );
+                let result = OpCode::disassemble(&options, &mut std::io::stdout(), &mut bytes);
 
                 match result
                 {
@@ -209,13 +160,7 @@ fn main()
 
         Err(msg) =>
         {
-            return println!(
-                "{}",
-                color_error(
-                    format!("Error opening file: {}", msg),
-                    &options
-                )
-            );
+            return println!("{}", color_error(format!("Error opening file: {}", msg), &options));
         }
     }
 }

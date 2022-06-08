@@ -69,16 +69,15 @@ Instruction Type Breakdown:
 */
 
 use arrayvec::ArrayVec;
-use crate::opcode::*;
-use crate::operand::*;
+
 use crate::argument::*;
 use crate::bits::*;
+use crate::opcode::*;
+use crate::operand::*;
 use crate::options::Options;
 use crate::theme::*;
 
-fn read_value<T: Iterator<Item=u8>, const WIDTH: usize>(
-    bytes: &mut T
-) -> Result<[u8; WIDTH], String>
+fn read_value<T: Iterator<Item = u8>, const WIDTH: usize>(bytes: &mut T) -> Result<[u8; WIDTH], String>
 {
     let mut value = [0u8; WIDTH];
 
@@ -90,7 +89,7 @@ fn read_value<T: Iterator<Item=u8>, const WIDTH: usize>(
     Ok(value)
 }
 
-pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item=u8>>(
+pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item = u8>>(
     writer: &mut W,
     options: &Options,
     _bytes: &mut T,
@@ -100,22 +99,12 @@ pub fn parse_instruction1<W: std::io::Write, T: Iterator<Item=u8>>(
 ) -> Result<(), String>
 {
     let bytecode = [byte0];
-    disassemble_instruction(
-        writer,
-        options,
-        &bytecode,
-        op.emit(options),
-        None,
-        None,
-        None,
-        None,
-        None
-    );
+    disassemble_instruction(writer, options, &bytecode, op.emit(options), None, None, None, None, None);
 
     Ok(())
 }
 
-pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
+pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item = u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
@@ -134,9 +123,7 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
         {
             if byte1 == 0
             {
-                let msg = String::from(
-                    "Runaway program break (found 2 zeros in a row, BREAK 0)"
-                );
+                let msg = String::from("Runaway program break (found 2 zeros in a row, BREAK 0)");
 
                 return Err(color_error(msg, options));
             }
@@ -170,22 +157,12 @@ pub fn parse_instruction2<W: std::io::Write, T: Iterator<Item=u8>>(
     };
 
     let bytecode = [byte0, byte1];
-    disassemble_instruction(
-        writer,
-        options,
-        &bytecode,
-        name,
-        None,
-        Some(arg1),
-        None,
-        None,
-        None
-    );
+    disassemble_instruction(writer, options, &bytecode, name, None, Some(arg1), None, None, None);
 
     Ok(())
 }
 
-pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
+pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item = u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
@@ -197,7 +174,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
     let mut name = op.emit(options);
     let mut postfix = String::with_capacity(5);
     let immediate_data_present = byte0_bits[7];
-    let is_64_bit = byte0_bits[6];  // Not used by PUSHn & POPn
+    let is_64_bit = byte0_bits[6]; // Not used by PUSHn & POPn
 
     let byte1 = bytes.next().ok_or("Unexpected end of bytes")?;
     let byte1_bits = bits_rev(byte1);
@@ -208,19 +185,10 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
 
     match op
     {
-        OpCode::CALL
-        | OpCode::JMP
-        | OpCode::PUSH
-        | OpCode::POP =>
+        OpCode::CALL | OpCode::JMP | OpCode::PUSH | OpCode::POP =>
         {
-            let width_postfix = if is_64_bit
-            {
-                color_x64(String::from("64"), options)
-            }
-            else
-            {
-                color_x32(String::from("32"), options)
-            };
+            let width_postfix =
+                if is_64_bit { color_x64(String::from("64"), options) } else { color_x32(String::from("32"), options) };
 
             postfix += &width_postfix;
         }
@@ -240,12 +208,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
             let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
             let op1 = if !is_64_bit
             {
-                Some(
-                    Operand::new_general_purpose(
-                        operand1_value,
-                        operand1_is_indirect
-                    )
-                )
+                Some(Operand::new_general_purpose(operand1_value, operand1_is_indirect))
             }
             else
             {
@@ -254,7 +217,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
 
             let arg1 = if is_64_bit
             {
-                postfix += "a";  // CALL64 is always an absolute address
+                postfix += "a"; // CALL64 is always an absolute address
 
                 let value = read_value::<T, 8>(bytes)?;
                 bytecode.extend(value.iter().cloned());
@@ -268,7 +231,6 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
                 let arg = if immediate_data_present
                 {
                     let value = read_value::<T, 4>(bytes)?;
-
 
                     bytecode.extend(value.iter().cloned());
 
@@ -307,12 +269,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
             let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
             let op1 = if !is_64_bit
             {
-                Some(
-                    Operand::new_general_purpose(
-                        operand1_value,
-                        operand1_is_indirect
-                    )
-                )
+                Some(Operand::new_general_purpose(operand1_value, operand1_is_indirect))
             }
             else
             {
@@ -362,10 +319,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
             (op1, arg1, None, None, comment)
         }
 
-        OpCode::PUSH
-        | OpCode::POP
-        | OpCode::PUSHn
-        | OpCode::POPn =>
+        OpCode::PUSH | OpCode::POP | OpCode::PUSHn | OpCode::POPn =>
         {
             let operand1_is_indirect = byte1_bits[3];
             let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
@@ -390,18 +344,7 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
                 None
             };
 
-            (
-                Some(
-                    Operand::new_general_purpose(
-                        operand1_value,
-                        operand1_is_indirect
-                    )
-                ),
-                arg1,
-                None,
-                None,
-                None
-            )
+            (Some(Operand::new_general_purpose(operand1_value, operand1_is_indirect)), arg1, None, None, None)
         }
 
         _ => unreachable!(),
@@ -409,22 +352,12 @@ pub fn parse_instruction3<W: std::io::Write, T: Iterator<Item=u8>>(
 
     name += &postfix;
 
-    disassemble_instruction(
-        writer,
-        options,
-        &bytecode,
-        name,
-        op1,
-        arg1,
-        op2,
-        arg2,
-        comment
-    );
+    disassemble_instruction(writer, options, &bytecode, name, op1, arg1, op2, arg2, comment);
 
     Ok(())
 }
 
-pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
+pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item = u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
@@ -446,35 +379,25 @@ pub fn parse_instruction4<W: std::io::Write, T: Iterator<Item=u8>>(
 
     let (op1, op2) = match op
     {
-        OpCode::STORESP => (
-            Operand::new_general_purpose(operand1_value, false),
-            Operand::new_dedicated(operand2_value, false)
-        ),
+        OpCode::STORESP =>
+        {
+            (Operand::new_general_purpose(operand1_value, false), Operand::new_dedicated(operand2_value, false))
+        }
 
-        OpCode::LOADSP => (
-            Operand::new_dedicated(operand1_value, false),
-            Operand::new_general_purpose(operand2_value, false)
-        ),
+        OpCode::LOADSP =>
+        {
+            (Operand::new_dedicated(operand1_value, false), Operand::new_general_purpose(operand2_value, false))
+        }
 
         _ => unreachable!(),
     };
 
-    disassemble_instruction(
-        writer,
-        options,
-        &bytecode,
-        name,
-        Some(op1),
-        None,
-        Some(op2),
-        None,
-        None
-    );
+    disassemble_instruction(writer, options, &bytecode, name, Some(op1), None, Some(op2), None, None);
 
     Ok(())
 }
 
-pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
+pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item = u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
@@ -523,12 +446,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let operand1_is_indirect = byte1_bits[3];
             let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
 
-            let op1 = Some(
-                Operand::new_general_purpose(
-                    operand1_value,
-                    operand1_is_indirect
-                )
-            );
+            let op1 = Some(Operand::new_general_purpose(operand1_value, operand1_is_indirect));
 
             let arg1 = if operand1_index_present
             {
@@ -541,10 +459,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
                 else
                 {
-                    let msg = format!(
-                        "Immediate data not supported for {}",
-                        op.emit(options)
-                    );
+                    let msg = format!("Immediate data not supported for {}", op.emit(options));
 
                     return Err(color_error(msg, options));
                 };
@@ -559,7 +474,8 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let arg2 = {
                 match immediate_data_width
                 {
-                    1 =>  // 16 bit
+                    1 =>
+                    // 16 bit
                     {
                         let value = read_value::<T, 2>(bytes)?;
                         bytecode.extend(value.iter().cloned());
@@ -567,7 +483,8 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                         Some(Argument::ImmediateI16(i16::from_le_bytes(value)))
                     }
 
-                    2 =>  // 32 bit
+                    2 =>
+                    // 32 bit
                     {
                         let value = read_value::<T, 4>(bytes)?;
                         bytecode.extend(value.iter().cloned());
@@ -575,7 +492,8 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                         Some(Argument::ImmediateI32(i32::from_le_bytes(value)))
                     }
 
-                    3 =>  // 64 bit
+                    3 =>
+                    // 64 bit
                     {
                         let value = read_value::<T, 8>(bytes)?;
                         bytecode.extend(value.iter().cloned());
@@ -592,11 +510,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             (op1, arg1, arg2)
         }
 
-        OpCode::CMPIeq
-        | OpCode::CMPIlte
-        | OpCode::CMPIgte
-        | OpCode::CMPIulte
-        | OpCode::CMPIugte =>
+        OpCode::CMPIeq | OpCode::CMPIlte | OpCode::CMPIgte | OpCode::CMPIulte | OpCode::CMPIugte =>
         {
             let immediate_data_is_32_bit = byte0_bits[7];
             let comparison_is_64_bit = byte0_bits[6];
@@ -631,15 +545,9 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 OpCode::CMPIeq => color_opcode(String::from("eq"), options),
                 OpCode::CMPIlte => color_opcode(String::from("lte"), options),
                 OpCode::CMPIgte => color_opcode(String::from("gte"), options),
-                OpCode::CMPIulte =>
-                {
-                    color_opcode(String::from("ulte"), options)
-                }
+                OpCode::CMPIulte => color_opcode(String::from("ulte"), options),
 
-                OpCode::CMPIugte =>
-                {
-                    color_opcode(String::from("ugte"), options)
-                }
+                OpCode::CMPIugte => color_opcode(String::from("ugte"), options),
 
                 _ => unreachable!(),
             };
@@ -650,12 +558,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let operand1_is_indirect = byte1_bits[3];
             let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
 
-            let op1 = Some(
-                Operand::new_general_purpose(
-                    operand1_value,
-                    operand1_is_indirect
-                )
-            );
+            let op1 = Some(Operand::new_general_purpose(operand1_value, operand1_is_indirect));
 
             let arg1 = if operand1_index_present
             {
@@ -668,10 +571,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
                 else
                 {
-                    let msg = format!(
-                        "Immediate data not supported for {}",
-                        op.emit(options)
-                    );
+                    let msg = format!("Immediate data not supported for {}", op.emit(options));
 
                     return Err(color_error(msg, options));
                 };
@@ -691,13 +591,9 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
 
                     match op
                     {
-                        OpCode::CMPIulte | OpCode::CMPIugte => Some(
-                            Argument::ImmediateU32(u32::from_le_bytes(value))
-                        ),
+                        OpCode::CMPIulte | OpCode::CMPIugte => Some(Argument::ImmediateU32(u32::from_le_bytes(value))),
 
-                        _ => Some(
-                            Argument::ImmediateI32(i32::from_le_bytes(value))
-                        ),
+                        _ => Some(Argument::ImmediateI32(i32::from_le_bytes(value))),
                     }
                 }
                 else
@@ -707,13 +603,9 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
 
                     match op
                     {
-                        OpCode::CMPIulte | OpCode::CMPIugte => Some(
-                            Argument::ImmediateU16(u16::from_le_bytes(value))
-                        ),
+                        OpCode::CMPIulte | OpCode::CMPIugte => Some(Argument::ImmediateU16(u16::from_le_bytes(value))),
 
-                        _ => Some(
-                            Argument::ImmediateI16(i16::from_le_bytes(value))
-                        ),
+                        _ => Some(Argument::ImmediateI16(i16::from_le_bytes(value))),
                     }
                 }
             };
@@ -738,12 +630,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let operand1_is_indirect = byte1_bits[3];
             let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
 
-            let op1 = Some(
-                Operand::new_general_purpose(
-                    operand1_value,
-                    operand1_is_indirect
-                )
-            );
+            let op1 = Some(Operand::new_general_purpose(operand1_value, operand1_is_indirect));
 
             let arg1 = if operand1_index_present
             {
@@ -756,10 +643,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
                 else
                 {
-                    let msg = format!(
-                        "Immediate data not supported for {}",
-                        op.emit(options)
-                    );
+                    let msg = format!("Immediate data not supported for {}", op.emit(options));
 
                     return Err(color_error(msg, options));
                 };
@@ -774,7 +658,8 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let arg2 = {
                 match operand2_index_width
                 {
-                    1 =>  // 16 bit
+                    1 =>
+                    // 16 bit
                     {
                         let value = read_value::<T, 2>(bytes)?;
                         bytecode.extend(value.iter().cloned());
@@ -782,7 +667,8 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                         Some(Argument::Index16(u16::from_le_bytes(value)))
                     }
 
-                    2 =>  // 32 bit
+                    2 =>
+                    // 32 bit
                     {
                         let value = read_value::<T, 4>(bytes)?;
                         bytecode.extend(value.iter().cloned());
@@ -790,7 +676,8 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                         Some(Argument::Index32(u32::from_le_bytes(value)))
                     }
 
-                    3 =>  // 64 bit
+                    3 =>
+                    // 64 bit
                     {
                         let value = read_value::<T, 8>(bytes)?;
                         bytecode.extend(value.iter().cloned());
@@ -824,12 +711,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let operand1_is_indirect = byte1_bits[3];
             let operand1_value = bits_to_byte_rev(&byte1_bits[0 ..= 2]);
 
-            let op1 = Some(
-                Operand::new_general_purpose(
-                    operand1_value,
-                    operand1_is_indirect
-                )
-            );
+            let op1 = Some(Operand::new_general_purpose(operand1_value, operand1_is_indirect));
 
             let arg1 = if operand1_index_present
             {
@@ -842,10 +724,7 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
                 else
                 {
-                    let msg = format!(
-                        "Immediate data not supported for {}",
-                        op.emit(options)
-                    );
+                    let msg = format!("Immediate data not supported for {}", op.emit(options));
 
                     return Err(color_error(msg, options));
                 };
@@ -860,7 +739,8 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
             let arg2 = {
                 match immediate_data_width
                 {
-                    1 =>  // 16 bit
+                    1 =>
+                    // 16 bit
                     {
                         let value = read_value::<T, 2>(bytes)?;
                         bytecode.extend(value.iter().cloned());
@@ -868,7 +748,8 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                         Some(Argument::ImmediateI16(i16::from_le_bytes(value)))
                     }
 
-                    2 =>  // 32 bit
+                    2 =>
+                    // 32 bit
                     {
                         let value = read_value::<T, 4>(bytes)?;
                         bytecode.extend(value.iter().cloned());
@@ -876,7 +757,8 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
                         Some(Argument::ImmediateI32(i32::from_le_bytes(value)))
                     }
 
-                    3 =>  // 64 bit
+                    3 =>
+                    // 64 bit
                     {
                         let value = read_value::<T, 8>(bytes)?;
                         bytecode.extend(value.iter().cloned());
@@ -896,22 +778,12 @@ pub fn parse_instruction5<W: std::io::Write, T: Iterator<Item=u8>>(
         _ => unreachable!(),
     };
 
-    disassemble_instruction(
-        writer,
-        options,
-        &bytecode,
-        name,
-        op1,
-        arg1,
-        None,
-        arg2,
-        None
-    );
+    disassemble_instruction(writer, options, &bytecode, name, op1, arg1, None, arg2, None);
 
     Ok(())
 }
 
-pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
+pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item = u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
@@ -923,14 +795,8 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
     let mut name = op.emit(options);
     let immediate_data_present = byte0_bits[7];
     let is_64_bit = byte0_bits[6];
-    let postfix = if is_64_bit
-    {
-        color_x64(String::from("64"), options)
-    }
-    else
-    {
-        color_x32(String::from("32"), options)
-    };
+    let postfix =
+        if is_64_bit { color_x64(String::from("64"), options) } else { color_x32(String::from("32"), options) };
 
     name += &postfix;
 
@@ -945,8 +811,7 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
     bytecode.push(byte0);
     bytecode.push(byte1);
 
-    let op1_x16_index_or_immediate =
-    {
+    let op1_x16_index_or_immediate = {
         if immediate_data_present
         {
             let value = read_value::<T, 2>(bytes)?;
@@ -974,21 +839,17 @@ pub fn parse_instruction6<W: std::io::Write, T: Iterator<Item=u8>>(
         options,
         &bytecode,
         name,
-        Some(
-            Operand::new_general_purpose(operand1_value, operand1_is_indirect)
-        ),
+        Some(Operand::new_general_purpose(operand1_value, operand1_is_indirect)),
         None,
-        Some(
-            Operand::new_general_purpose(operand2_value, operand2_is_indirect)
-        ),
+        Some(Operand::new_general_purpose(operand2_value, operand2_is_indirect)),
         op1_x16_index_or_immediate,
-        None
+        None,
     );
 
     Ok(())
 }
 
-pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
+pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item = u8>>(
     writer: &mut W,
     options: &Options,
     bytes: &mut T,
@@ -1011,32 +872,21 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
     bytecode.push(byte0);
     bytecode.push(byte1);
 
-    let op1 = Some(
-        Operand::new_general_purpose(
-            operand1_value,
-            operand1_is_indirect
-        )
-    );
+    let op1 = Some(Operand::new_general_purpose(operand1_value, operand1_is_indirect));
 
-    let op2 = Some(
-        Operand::new_general_purpose(
-            operand2_value,
-            operand2_is_indirect
-        )
-    );
+    let op2 = Some(Operand::new_general_purpose(operand2_value, operand2_is_indirect));
 
     let (arg1, arg2) = match op
     {
-        OpCode::MOVsnw
-        | OpCode::MOVsnd =>
+        OpCode::MOVsnw | OpCode::MOVsnd =>
         {
-            let arg1 =
-            {
+            let arg1 = {
                 if operand1_index_present
                 {
                     let arg = match op
                     {
-                        OpCode::MOVsnw =>  // 16 bit
+                        OpCode::MOVsnw =>
+                        // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1044,7 +894,8 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             Argument::Index16(u16::from_le_bytes(value))
                         }
 
-                        OpCode::MOVsnd =>  // 32 bit
+                        OpCode::MOVsnd =>
+                        // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1052,7 +903,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             Argument::Index32(u32::from_le_bytes(value))
                         }
 
-                        _ => unreachable!()
+                        _ => unreachable!(),
                     };
 
                     Some(arg)
@@ -1063,13 +914,13 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
             };
 
-            let arg2 =
-            {
+            let arg2 = {
                 if operand2_index_present
                 {
                     let arg = match op
                     {
-                        OpCode::MOVsnw =>  // 16 bit
+                        OpCode::MOVsnw =>
+                        // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1080,13 +931,12 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             }
                             else
                             {
-                                Argument::ImmediateI16(
-                                    i16::from_le_bytes(value)
-                                )
+                                Argument::ImmediateI16(i16::from_le_bytes(value))
                             }
                         }
 
-                        OpCode::MOVsnd =>  // 32 bit
+                        OpCode::MOVsnd =>
+                        // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1097,13 +947,11 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             }
                             else
                             {
-                                Argument::ImmediateI32(
-                                    i32::from_le_bytes(value)
-                                )
+                                Argument::ImmediateI32(i32::from_le_bytes(value))
                             }
                         }
 
-                        _ => unreachable!()
+                        _ => unreachable!(),
                     };
 
                     Some(arg)
@@ -1118,16 +966,15 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
         }
 
         // Try to combine this with MOVsnw and MOVsnd
-        OpCode::MOVnw
-        | OpCode::MOVnd =>
+        OpCode::MOVnw | OpCode::MOVnd =>
         {
-            let arg1 =
-            {
+            let arg1 = {
                 if operand1_index_present
                 {
                     let arg = match op
                     {
-                        OpCode::MOVnw =>  // 16 bit
+                        OpCode::MOVnw =>
+                        // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1135,7 +982,8 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             Argument::Index16(u16::from_le_bytes(value))
                         }
 
-                        OpCode::MOVnd =>  // 32 bit
+                        OpCode::MOVnd =>
+                        // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1143,7 +991,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             Argument::Index32(u32::from_le_bytes(value))
                         }
 
-                        _ => unreachable!()
+                        _ => unreachable!(),
                     };
 
                     Some(arg)
@@ -1154,13 +1002,13 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
             };
 
-            let arg2 =
-            {
+            let arg2 = {
                 if operand2_index_present
                 {
                     let arg = match op
                     {
-                        OpCode::MOVnw =>  // 16 bit
+                        OpCode::MOVnw =>
+                        // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1171,13 +1019,12 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             }
                             else
                             {
-                                Argument::ImmediateI16(
-                                    i16::from_le_bytes(value)
-                                )
+                                Argument::ImmediateI16(i16::from_le_bytes(value))
                             }
                         }
 
-                        OpCode::MOVnd =>  // 32 bit
+                        OpCode::MOVnd =>
+                        // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1188,13 +1035,11 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             }
                             else
                             {
-                                Argument::ImmediateI32(
-                                    i32::from_le_bytes(value)
-                                )
+                                Argument::ImmediateI32(i32::from_le_bytes(value))
                             }
                         }
 
-                        _ => unreachable!()
+                        _ => unreachable!(),
                     };
 
                     Some(arg)
@@ -1208,18 +1053,16 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
             (arg1, arg2)
         }
 
-        _ =>  // MOV
+        _ =>
+        // MOV
         {
-            let arg1 =
-            {
+            let arg1 = {
                 if operand1_index_present
                 {
                     let arg = match op
                     {
-                        OpCode::MOVbw
-                        | OpCode::MOVww
-                        | OpCode::MOVdw
-                        | OpCode::MOVqw =>  // 16 bit
+                        OpCode::MOVbw | OpCode::MOVww | OpCode::MOVdw | OpCode::MOVqw =>
+                        // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1227,10 +1070,8 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             Argument::Index16(u16::from_le_bytes(value))
                         }
 
-                        OpCode::MOVbd
-                        | OpCode::MOVwd
-                        | OpCode::MOVdd
-                        | OpCode::MOVqd =>  // 32 bit
+                        OpCode::MOVbd | OpCode::MOVwd | OpCode::MOVdd | OpCode::MOVqd =>
+                        // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1238,7 +1079,8 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             Argument::Index32(u32::from_le_bytes(value))
                         }
 
-                        OpCode::MOVqq =>  // 64 bit
+                        OpCode::MOVqq =>
+                        // 64 bit
                         {
                             let value = read_value::<T, 8>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1246,7 +1088,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             Argument::Index64(u64::from_le_bytes(value))
                         }
 
-                        _ => unreachable!()
+                        _ => unreachable!(),
                     };
 
                     Some(arg)
@@ -1257,16 +1099,13 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                 }
             };
 
-            let arg2 =
-            {
+            let arg2 = {
                 if operand2_index_present
                 {
                     let arg = match op
                     {
-                        OpCode::MOVbw
-                        | OpCode::MOVww
-                        | OpCode::MOVdw
-                        | OpCode::MOVqw =>  // 16 bit
+                        OpCode::MOVbw | OpCode::MOVww | OpCode::MOVdw | OpCode::MOVqw =>
+                        // 16 bit
                         {
                             let value = read_value::<T, 2>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1274,10 +1113,8 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             Argument::Index16(u16::from_le_bytes(value))
                         }
 
-                        OpCode::MOVbd
-                        | OpCode::MOVwd
-                        | OpCode::MOVdd
-                        | OpCode::MOVqd =>  // 32 bit
+                        OpCode::MOVbd | OpCode::MOVwd | OpCode::MOVdd | OpCode::MOVqd =>
+                        // 32 bit
                         {
                             let value = read_value::<T, 4>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1285,7 +1122,8 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             Argument::Index32(u32::from_le_bytes(value))
                         }
 
-                        OpCode::MOVqq =>  // 64 bit
+                        OpCode::MOVqq =>
+                        // 64 bit
                         {
                             let value = read_value::<T, 8>(bytes)?;
                             bytecode.extend(value.iter().cloned());
@@ -1293,7 +1131,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
                             Argument::Index64(u64::from_le_bytes(value))
                         }
 
-                        _ => unreachable!()
+                        _ => unreachable!(),
                     };
 
                     Some(arg)
@@ -1314,15 +1152,15 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
 
     let postfix = match op
     {
-        OpCode::MOVnw
-        | OpCode::MOVsnw =>
+        OpCode::MOVnw | OpCode::MOVsnw =>
         {
             // If indices are present, keep them
             let move_width = if indices_present
             {
                 String::from(chars.next_back().unwrap())
             }
-            else  // Remove it to get to the guaranteed move width
+            else
+            // Remove it to get to the guaranteed move width
             {
                 chars.next_back().unwrap();
                 String::from("")
@@ -1332,15 +1170,15 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
             color_x16(move_width, options)
         }
 
-        OpCode::MOVnd
-        | OpCode::MOVsnd =>
+        OpCode::MOVnd | OpCode::MOVsnd =>
         {
             // If indices are present, keep them
             let move_width = if indices_present
             {
                 String::from(chars.next_back().unwrap())
             }
-            else  // Remove it to get to the guaranteed move width
+            else
+            // Remove it to get to the guaranteed move width
             {
                 chars.next_back().unwrap();
                 String::from("")
@@ -1368,28 +1206,17 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
 
                 match op
                 {
-                    OpCode::MOVbw
-                    | OpCode::MOVww
-                    | OpCode::MOVdw
-                    | OpCode::MOVqw =>
-                    {
-                        color_x16(width, options)
-                    }
+                    OpCode::MOVbw | OpCode::MOVww | OpCode::MOVdw | OpCode::MOVqw => color_x16(width, options),
 
-                    OpCode::MOVbd
-                    | OpCode::MOVwd
-                    | OpCode::MOVdd
-                    | OpCode::MOVqd =>
-                    {
-                        color_x32(width, options)
-                    }
+                    OpCode::MOVbd | OpCode::MOVwd | OpCode::MOVdd | OpCode::MOVqd => color_x32(width, options),
 
                     OpCode::MOVqq => color_x64(width, options),
 
                     _ => unreachable!(),
                 }
             }
-            else  // Remove it to get to the guaranteed move width
+            else
+            // Remove it to get to the guaranteed move width
             {
                 chars.next_back().unwrap();
                 String::from("")
@@ -1404,10 +1231,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
 
                 OpCode::MOVdw | OpCode::MOVdd => color_x32(move_width, options),
 
-                OpCode::MOVqw | OpCode::MOVqd | OpCode::MOVqq =>
-                {
-                    color_x64(move_width, options)
-                }
+                OpCode::MOVqw | OpCode::MOVqd | OpCode::MOVqq => color_x64(move_width, options),
 
                 _ => unreachable!(),
             };
@@ -1422,17 +1246,7 @@ pub fn parse_instruction7<W: std::io::Write, T: Iterator<Item=u8>>(
     name = color_opcode(postfixes_removed, options);
     name += &postfix;
 
-    disassemble_instruction(
-        writer,
-        options,
-        &bytecode,
-        name,
-        op1,
-        arg1,
-        op2,
-        arg2,
-        None
-    );
+    disassemble_instruction(writer, options, &bytecode, name, op1, arg1, op2, arg2, None);
 
     Ok(())
 }
@@ -1441,7 +1255,7 @@ pub fn disassemble_instruction<W: std::io::Write>(
     writer: &mut W,
     options: &Options,
     bytecode: &[u8],
-    instruction: String,  // Must concatenate postfixes manually
+    instruction: String, // Must concatenate postfixes manually
     operand1: Option<Operand>,
     argument1: Option<Argument>,
     operand2: Option<Operand>,
@@ -1452,9 +1266,7 @@ pub fn disassemble_instruction<W: std::io::Write>(
     if options.bytecode
     {
         const TWO_CHARS_AND_A_SPACE: usize = 3;
-        let mut bytecode_output = String::with_capacity(
-            bytecode.len() * TWO_CHARS_AND_A_SPACE
-        );
+        let mut bytecode_output = String::with_capacity(bytecode.len() * TWO_CHARS_AND_A_SPACE);
 
         for byte in bytecode.iter()
         {
@@ -1509,19 +1321,28 @@ pub fn disassemble_instruction<W: std::io::Write>(
         {
             Argument::Index16(_index) =>
             {
-                if operand2.is_none() { write!(writer, " ").unwrap(); }
+                if operand2.is_none()
+                {
+                    write!(writer, " ").unwrap();
+                }
                 write!(writer, "{}", arg2.emit(options)).unwrap();
             }
 
             Argument::Index32(_index) =>
             {
-                if operand2.is_none() { write!(writer, " ").unwrap(); }
+                if operand2.is_none()
+                {
+                    write!(writer, " ").unwrap();
+                }
                 write!(writer, "{}", arg2.emit(options)).unwrap();
             }
 
             Argument::Index64(_index) =>
             {
-                if operand2.is_none() { write!(writer, " ").unwrap(); }
+                if operand2.is_none()
+                {
+                    write!(writer, " ").unwrap();
+                }
                 write!(writer, "{}", arg2.emit(options)).unwrap();
             }
 
@@ -1531,10 +1352,7 @@ pub fn disassemble_instruction<W: std::io::Write>(
 
     if let Some(line_comment) = comment
     {
-        let the_comment = color_comment(
-            format!("  ;; {}", line_comment),
-            options
-        );
+        let the_comment = color_comment(format!("  ;; {}", line_comment), options);
 
         write!(writer, "{}", the_comment).unwrap();
     }

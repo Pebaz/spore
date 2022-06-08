@@ -1,6 +1,6 @@
+use crate::bits::*;
 use crate::options::Options;
 use crate::theme::*;
-use crate::bits::*;
 
 const SIZE_OF_VOID_PTR: u16 = 8;
 const HEADER_SIZE: usize = 4;
@@ -26,21 +26,16 @@ impl NaturalIndex
         let sign = if bits[0] { -1i64 } else { 1i64 };
         let width_base = bits_to_byte_u16(&bits[1 .. 4]);
         let actual_width = width_base * ENCODING_SIZE;
-        let natural = bits_to_byte_u16(
-            &bits[bits.len() - actual_width as usize ..]
-        );
-        let constant = bits_to_byte_u16(
-            &bits[HEADER_SIZE .. bits.len() - actual_width as usize]
-        );
+        let natural = bits_to_byte_u16(&bits[bits.len() - actual_width as usize ..]);
+        let constant = bits_to_byte_u16(&bits[HEADER_SIZE .. bits.len() - actual_width as usize]);
         let offset = sign * (constant + natural * SIZE_OF_VOID_PTR) as i64;
 
-        Self
-        {
+        Self {
             value: value as u64,
             sign: sign as i8,
             constant: constant as u64,
             natural: natural as u64,
-            offset: offset as i64
+            offset: offset as i64,
         }
     }
 
@@ -54,23 +49,16 @@ impl NaturalIndex
         let sign = if bits[0] { -1i64 } else { 1i64 };
         let width_base = bits_to_byte_u32(&bits[1 .. 4]);
         let actual_width = width_base * ENCODING_SIZE;
-        let natural = bits_to_byte_u32(
-            &bits[bits.len() - actual_width as usize ..]
-        );
-        let constant = bits_to_byte_u32(
-            &bits[HEADER_SIZE .. bits.len() - actual_width as usize]
-        );
-        let offset = {
-            sign * (constant + natural * SIZE_OF_VOID_PTR as u32) as i64
-        };
+        let natural = bits_to_byte_u32(&bits[bits.len() - actual_width as usize ..]);
+        let constant = bits_to_byte_u32(&bits[HEADER_SIZE .. bits.len() - actual_width as usize]);
+        let offset = { sign * (constant + natural * SIZE_OF_VOID_PTR as u32) as i64 };
 
-        Self
-        {
+        Self {
             value: value as u64,
             sign: sign as i8,
             constant: constant as u64,
             natural: natural as u64,
-            offset: offset as i64
+            offset: offset as i64,
         }
     }
 
@@ -84,24 +72,11 @@ impl NaturalIndex
         let sign = if bits[0] { -1i64 } else { 1i64 };
         let width_base = bits_to_byte_u64(&bits[1 .. 4]);
         let actual_width = width_base * ENCODING_SIZE;
-        let natural = bits_to_byte_u64(
-            &bits[bits.len() - actual_width as usize ..]
-        );
-        let constant = bits_to_byte_u64(
-            &bits[HEADER_SIZE .. bits.len() - actual_width as usize]
-        );
-        let offset = {
-            sign * (constant + natural * SIZE_OF_VOID_PTR as u64) as i64
-        };
+        let natural = bits_to_byte_u64(&bits[bits.len() - actual_width as usize ..]);
+        let constant = bits_to_byte_u64(&bits[HEADER_SIZE .. bits.len() - actual_width as usize]);
+        let offset = { sign * (constant + natural * SIZE_OF_VOID_PTR as u64) as i64 };
 
-        Self
-        {
-            value: value,
-            sign: sign as i8,
-            constant: constant,
-            natural: natural,
-            offset: offset as i64
-        }
+        Self { value: value, sign: sign as i8, constant: constant, natural: natural, offset: offset as i64 }
     }
 }
 
@@ -118,7 +93,6 @@ impl Emit for NaturalIndex
         )
     }
 }
-
 
 #[cfg(test)]
 mod tests

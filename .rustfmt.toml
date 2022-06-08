@@ -1,0 +1,32 @@
+# https://rust-lang.github.io/rustfmt/?version=v1.4.38&search=
+
+# indent_style = "Block"
+# reorder_imports = false
+
+use_small_heuristics = "Off"
+comment_width = 120
+max_width = 120
+fn_call_width = 120
+attr_fn_like_width = 120
+struct_lit_width = 120
+struct_variant_width = 120
+array_width = 120
+chain_width = 120
+single_line_if_else_max_width = 120
+
+reorder_impl_items = true
+reorder_imports = true
+group_imports = "StdExternalCrate"
+
+merge_derives = true
+indent_style = "Block"
+brace_style = "AlwaysNextLine"
+control_brace_style = "AlwaysNextLine"
+combine_control_expr = false
+fn_args_layout = "Tall"
+condense_wildcard_suffixes = true
+spaces_around_ranges = true
+wrap_comments = true
+blank_lines_upper_bound = 1
+newline_style = "Unix"
+overflow_delimited_expr = true

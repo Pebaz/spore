@@ -1,8 +1,8 @@
 use colored::*;
+
 use crate::options::Options;
 
-pub const SPORE: Theme = Theme
-{
+pub const SPORE: Theme = Theme {
     opcode: color(217, 207, 199),
     error: color(207, 66, 31),
     bytecode: color(84, 71, 52),
@@ -17,8 +17,7 @@ pub const SPORE: Theme = Theme
     x64: color(125, 95, 102),
 };
 
-pub const INDUSTRIAL_COMPUTER: Theme = Theme
-{
+pub const INDUSTRIAL_COMPUTER: Theme = Theme {
     opcode: color(161, 156, 148),
     error: color(255, 0, 0),
     bytecode: color(77, 75, 73),
@@ -33,8 +32,7 @@ pub const INDUSTRIAL_COMPUTER: Theme = Theme
     x64: color(110, 18, 0),
 };
 
-pub const MATTERHORN_ZERMATT_VILLAGE: Theme = Theme
-{
+pub const MATTERHORN_ZERMATT_VILLAGE: Theme = Theme {
     opcode: color(173, 185, 201),
     error: color(255, 153, 0),
     bytecode: color(211, 195, 212),
@@ -76,8 +74,10 @@ pub fn colored_string(string: String, color: Color) -> String
     {
         string.truecolor(r, g, b).to_string()
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_opcode(string: String, options: &Options) -> String
@@ -86,8 +86,10 @@ pub fn color_opcode(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.opcode)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_error(string: String, options: &Options) -> String
@@ -96,8 +98,10 @@ pub fn color_error(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.error)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_bytecode(string: String, options: &Options) -> String
@@ -106,8 +110,10 @@ pub fn color_bytecode(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.bytecode)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_indirect(string: String, options: &Options) -> String
@@ -116,8 +122,10 @@ pub fn color_indirect(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.indirect)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_operand(string: String, options: &Options) -> String
@@ -126,8 +134,10 @@ pub fn color_operand(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.operand)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_index(string: String, options: &Options) -> String
@@ -136,8 +146,10 @@ pub fn color_index(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.index)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_immediate(string: String, options: &Options) -> String
@@ -146,8 +158,10 @@ pub fn color_immediate(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.immediate)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_comment(string: String, options: &Options) -> String
@@ -156,10 +170,11 @@ pub fn color_comment(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.comment)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
-
 
 pub fn color_x8(string: String, options: &Options) -> String
 {
@@ -167,8 +182,10 @@ pub fn color_x8(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.x8)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_x16(string: String, options: &Options) -> String
@@ -177,8 +194,10 @@ pub fn color_x16(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.x16)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_x32(string: String, options: &Options) -> String
@@ -187,8 +206,10 @@ pub fn color_x32(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.x32)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
 
 pub fn color_x64(string: String, options: &Options) -> String
@@ -197,10 +218,11 @@ pub fn color_x64(string: String, options: &Options) -> String
     {
         colored_string(string, color_theme.x64)
     }
-
-    else { string }
+    else
+    {
+        string
+    }
 }
-
 
 pub trait Emit
 {

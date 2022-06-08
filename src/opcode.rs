@@ -1,8 +1,7 @@
+use crate::bits::*;
 use crate::instruction::*;
 use crate::options::Options;
-use crate::bits::*;
 use crate::theme::*;
-
 
 #[derive(Debug)]
 pub enum OpCode
@@ -62,7 +61,7 @@ pub enum OpCode
     SHR = 0x18,
     STORESP = 0x2A,
     SUB = 0x0D,
-    XOR = 0x16
+    XOR = 0x16,
 }
 
 impl std::convert::TryFrom<OpCode> for u8
@@ -210,10 +209,10 @@ impl OpCode
     //     writer: &mut W,
     //     bytes: &mut T
     // ) -> Result<(), String>
-    pub fn disassemble<T: Iterator<Item=u8>, W: std::io::Write>(
+    pub fn disassemble<T: Iterator<Item = u8>, W: std::io::Write>(
         options: &Options,
         writer: &mut W,
-        bytes: &mut std::iter::Peekable<T>
+        bytes: &mut std::iter::Peekable<T>,
     ) -> Result<(), String>
     {
         let byte0 = if let Some(byte) = bytes.next()
@@ -230,9 +229,7 @@ impl OpCode
 
         let byte0_bits = bits_rev(byte0);
         let op_value = bits_to_byte_rev(&byte0_bits[0 ..= 5]);
-        let op: OpCode = op_value.try_into().expect(
-            format!("Invalid OpCode: {}", op_value).as_str()
-        );
+        let op: OpCode = op_value.try_into().expect(format!("Invalid OpCode: {}", op_value).as_str());
 
         match op
         {
@@ -242,24 +239,18 @@ impl OpCode
                 {
                     if *byte == 0
                     {
-                        bytes.next();  // Skip this and the next zero
+                        bytes.next(); // Skip this and the next zero
                         Ok(())
                     }
-                    else if *byte > 6  // 1-6 are valid break codes
+                    else if *byte > 6
+                    // 1-6 are valid break codes
                     {
-                        Ok(())  // Only skip this zero
+                        Ok(()) // Only skip this zero
                     }
                     else
                     {
                         // 2. INSTRUCTION ARGUMENT (BREAK)
-                        parse_instruction2(
-                            writer,
-                            options,
-                            bytes,
-                            byte0,
-                            byte0_bits,
-                            op
-                        )
+                        parse_instruction2(writer, options, bytes, byte0, byte0_bits, op)
                     }
                 }
                 else
@@ -269,61 +260,24 @@ impl OpCode
             }
 
             // 1. INSTRUCTION (RET)
-            OpCode::RET =>
-            {
-                parse_instruction1(
-                    writer,
-                    options,
-                    bytes,
-                    byte0,
-                    byte0_bits,
-                    op
-                )
-            }
+            OpCode::RET => parse_instruction1(writer, options, bytes, byte0, byte0_bits, op),
 
             OpCode::JMP8 =>
             {
                 // 2. INSTRUCTION ARGUMENT (BREAK)
-                parse_instruction2(
-                    writer,
-                    options,
-                    bytes,
-                    byte0,
-                    byte0_bits,
-                    op
-                )
+                parse_instruction2(writer, options, bytes, byte0, byte0_bits, op)
             }
 
-            OpCode::CALL
-            | OpCode::JMP
-            | OpCode::PUSH
-            | OpCode::PUSHn
-            | OpCode::POP
-            | OpCode::POPn =>
+            OpCode::CALL | OpCode::JMP | OpCode::PUSH | OpCode::PUSHn | OpCode::POP | OpCode::POPn =>
             {
                 // 3. INSTRUCTION OP1 ARGUMENT (CALL)
-                parse_instruction3(
-                    writer,
-                    options,
-                    bytes,
-                    byte0,
-                    byte0_bits,
-                    op
-                )
+                parse_instruction3(writer, options, bytes, byte0, byte0_bits, op)
             }
 
-            OpCode::LOADSP
-            | OpCode::STORESP =>
+            OpCode::LOADSP | OpCode::STORESP =>
             {
                 // 4. INSTRUCTION OP1, OP2 (STORESP)
-                parse_instruction4(
-                    writer,
-                    options,
-                    bytes,
-                    byte0,
-                    byte0_bits,
-                    op
-                )
+                parse_instruction4(writer, options, bytes, byte0, byte0_bits, op)
             }
 
             OpCode::CMPIeq
@@ -336,14 +290,7 @@ impl OpCode
             | OpCode::MOVREL =>
             {
                 // 5. INSTRUCTION OP1 ARGUMENT, ARGUMENT (CMPI)
-                parse_instruction5(
-                    writer,
-                    options,
-                    bytes,
-                    byte0,
-                    byte0_bits,
-                    op
-                )
+                parse_instruction5(writer, options, bytes, byte0, byte0_bits, op)
             }
 
             OpCode::ADD
@@ -372,14 +319,7 @@ impl OpCode
             | OpCode::XOR =>
             {
                 // 6. INSTRUCTION OP1, OP2 ARGUMENT
-                parse_instruction6(
-                    writer,
-                    options,
-                    bytes,
-                    byte0,
-                    byte0_bits,
-                    op
-                )
+                parse_instruction6(writer, options, bytes, byte0, byte0_bits, op)
             }
 
             OpCode::MOVnw
@@ -397,14 +337,7 @@ impl OpCode
             | OpCode::MOVsnd =>
             {
                 // 7. INSTRUCTION OP1 ARGUMENT, OP2 ARGUMENT (MOV)
-                parse_instruction7(
-                    writer,
-                    options,
-                    bytes,
-                    byte0,
-                    byte0_bits,
-                    op
-                )
+                parse_instruction7(writer, options, bytes, byte0, byte0_bits, op)
             }
         }
     }
